@@ -1,0 +1,44 @@
+{
+    "corpus": [
+      {
+        "condition": "Type 2 Diabetes",
+        "symptoms": "high blood sugar, excessive thirst, frequent urination, increased hunger, fatigue"
+      },
+      {
+        "condition": "Lung Cancer",
+        "symptoms": "persistent cough, chest pain, difficulty breathing, coughing blood, unexplained weight loss"
+      },
+      {
+        "condition": "Asthma",
+        "symptoms": "wheezing, shortness of breath, chest tightness, coughing"
+      },
+      {
+        "condition": "Hypertension",
+        "symptoms": "high blood pressure, headaches, dizziness, blurred vision"
+      },
+      {
+        "condition": "Migraine",
+        "symptoms": "severe headache, nausea, sensitivity to light, sensitivity to sound"
+      },
+      {
+        "condition": "Rheumatoid Arthritis",
+        "symptoms": "joint pain, joint swelling, stiffness, fatigue"
+      },
+      {
+        "condition": "Parkinson Disease",
+        "symptoms": "tremor, shaking, slow movement, stiffness, balance problems"
+      },
+      {
+        "condition": "Alzheimer Disease",
+        "symptoms": "memory loss, confusion, difficulty thinking, problems with daily activities"
+      },
+      {
+        "condition": "Chronic Kidney Disease",
+        "symptoms": "fatigue, swelling, changes in urination, nausea, loss of appetite"
+      },
+      {
+        "condition": "Heart Failure",
+        "symptoms": "shortness of breath, fatigue, swelling in legs, rapid heartbeat"
+      }
+    ]
+  }
