@@ -10,18 +10,18 @@ const World = dynamic(
 
 const globeConfig = {
   pointSize: 4,
-  globeColor: "#062056",
+  globeColor: "#0a0a12",
   showAtmosphere: true,
-  atmosphereColor: "#6c63ff",
-  atmosphereAltitude: 0.15,
-  emissive: "#062056",
-  emissiveIntensity: 0.1,
+  atmosphereColor: "#2f74ff",
+  atmosphereAltitude: 0.16,
+  emissive: "#05050a",
+  emissiveIntensity: 0.12,
   shininess: 0.9,
-  polygonColor: "rgba(255,255,255,0.7)",
-  ambientLight: "#38bdf8",
+  polygonColor: "rgba(255,255,255,0.65)",
+  ambientLight: "#5b95ff",
   directionalLeftLight: "#ffffff",
   directionalTopLight: "#ffffff",
-  pointLight: "#ffffff",
+  pointLight: "#5b95ff",
   arcTime: 1000,
   arcLength: 0.9,
   rings: 1,
@@ -31,7 +31,7 @@ const globeConfig = {
   autoRotateSpeed: 0.5,
 };
 
-const arcColors = ["#6c63ff", "#a78bfa", "#8b83ff", "#c4b5fd"];
+const arcColors = ["#2f74ff", "#5b95ff", "#38bdf8", "#7cb0ff"];
 
 const trialArcs = [
   { order: 1, startLat: 28.6, startLng: 77.2, endLat: 40.7, endLng: -74.0, arcAlt: 0.3, color: arcColors[0] },
@@ -58,7 +58,7 @@ export default function GlobeSection() {
     >
       {/* Glow backdrop */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="w-[400px] h-[400px] rounded-full bg-[var(--accent)]/10 blur-[80px]" />
+        <div className="w-[420px] h-[420px] rounded-full bg-[var(--accent)]/[0.12] blur-[90px]" />
       </div>
 
       {/* Globe */}
@@ -71,10 +71,11 @@ export default function GlobeSection() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.5, duration: 0.5 }}
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 glass px-4 py-2 rounded-full"
+        className="absolute bottom-6 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full bg-black/60 backdrop-blur-md border border-[var(--border)]"
       >
-        <span className="text-xs text-[var(--text-secondary)]">
-          🌐 20+ countries • Live trial locations
+        <span className="text-xs text-[var(--text-secondary)] flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-light)] animate-pulse" />
+          20+ countries · Live trial locations
         </span>
       </motion.div>
     </motion.div>

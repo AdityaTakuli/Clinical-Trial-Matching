@@ -26,24 +26,16 @@ interface Trial {
   matched_condition: string;
 }
 
+const GRID = "rgba(255,255,255,0.08)";
+const AXIS = "#8b8b90";
+const MUTED = "#56565c";
+
 export function MatchRadar({ trial }: { trial: Trial }) {
   const data = [
-    {
-      metric: "Condition",
-      value: Math.round((trial.condition_similarity || 0) * 100),
-    },
-    {
-      metric: "Eligibility",
-      value: Math.round((trial.eligibility_score || 0) * 100),
-    },
-    {
-      metric: "Location",
-      value: Math.round((trial.location_score || 0) * 100),
-    },
-    {
-      metric: "Overall",
-      value: Math.round((trial.score || 0) * 100),
-    },
+    { metric: "Condition", value: Math.round((trial.condition_similarity || 0) * 100) },
+    { metric: "Eligibility", value: Math.round((trial.eligibility_score || 0) * 100) },
+    { metric: "Location", value: Math.round((trial.location_score || 0) * 100) },
+    { metric: "Overall", value: Math.round((trial.score || 0) * 100) },
   ];
 
   return (
@@ -55,21 +47,14 @@ export function MatchRadar({ trial }: { trial: Trial }) {
     >
       <ResponsiveContainer>
         <RadarChart data={data} margin={{ top: 10, right: 30, bottom: 10, left: 30 }}>
-          <PolarGrid stroke="#1e1e2e" />
-          <PolarAngleAxis
-            dataKey="metric"
-            tick={{ fill: "#9d9db5", fontSize: 11 }}
-          />
-          <PolarRadiusAxis
-            angle={90}
-            domain={[0, 100]}
-            tick={{ fill: "#6b7280", fontSize: 9 }}
-          />
+          <PolarGrid stroke={GRID} />
+          <PolarAngleAxis dataKey="metric" tick={{ fill: AXIS, fontSize: 11 }} />
+          <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fill: MUTED, fontSize: 9 }} />
           <Radar
             dataKey="value"
-            stroke="#6c63ff"
-            fill="#6c63ff"
-            fillOpacity={0.2}
+            stroke="#2f74ff"
+            fill="#2f74ff"
+            fillOpacity={0.22}
             strokeWidth={2}
           />
         </RadarChart>
@@ -85,7 +70,8 @@ export function TrialComparisonChart({ trials }: { trials: Trial[] }) {
     condition: t.matched_condition,
   }));
 
-  const colors = ["#6c63ff", "#8b83ff", "#a78bfa", "#c4b5fd", "#ddd6fe"];
+  // Blue gradient palette, brightest first
+  const colors = ["#2f74ff", "#4a86ff", "#5b95ff", "#7cb0ff", "#9cc4ff"];
 
   return (
     <motion.div
@@ -96,26 +82,19 @@ export function TrialComparisonChart({ trials }: { trials: Trial[] }) {
     >
       <ResponsiveContainer>
         <BarChart data={data} margin={{ top: 10, right: 10, bottom: 20, left: 10 }}>
-          <XAxis
-            dataKey="name"
-            tick={{ fill: "#9d9db5", fontSize: 10 }}
-            axisLine={{ stroke: "#1e1e2e" }}
-          />
-          <YAxis
-            domain={[0, 100]}
-            tick={{ fill: "#6b7280", fontSize: 10 }}
-            axisLine={{ stroke: "#1e1e2e" }}
-          />
+          <XAxis dataKey="name" tick={{ fill: AXIS, fontSize: 10 }} axisLine={{ stroke: GRID }} tickLine={false} />
+          <YAxis domain={[0, 100]} tick={{ fill: MUTED, fontSize: 10 }} axisLine={{ stroke: GRID }} tickLine={false} />
           <Tooltip
+            cursor={{ fill: "rgba(255,255,255,0.03)" }}
             contentStyle={{
-              background: "#16161f",
-              border: "1px solid #1e1e2e",
-              borderRadius: "8px",
-              color: "#f0f0f5",
+              background: "#0a0a0a",
+              border: "1px solid rgba(255,255,255,0.12)",
+              borderRadius: "10px",
+              color: "#ffffff",
               fontSize: "12px",
             }}
           />
-          <Bar dataKey="score" radius={[4, 4, 0, 0]}>
+          <Bar dataKey="score" radius={[6, 6, 0, 0]}>
             {data.map((_, i) => (
               <Cell key={i} fill={colors[i % colors.length]} />
             ))}

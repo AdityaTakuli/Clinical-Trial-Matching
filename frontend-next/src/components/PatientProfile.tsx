@@ -13,13 +13,27 @@ interface Profile {
   medical_history: string[];
 }
 
+function Chip({ label, accent }: { label: string; accent?: boolean }) {
+  return (
+    <span
+      className={`text-xs px-2.5 py-1 rounded-full border transition-colors ${
+        accent
+          ? "bg-[var(--accent-soft)] border-[var(--accent)]/30 text-[var(--accent-light)]"
+          : "bg-white/[0.04] border-[var(--border)] text-[var(--text-secondary)]"
+      }`}
+    >
+      {label}
+    </span>
+  );
+}
+
 export default function PatientProfile({ profile }: { profile: Profile }) {
   if (!profile) return null;
 
   const items = [
-    { label: "Age", value: profile.age ?? "Unknown" },
-    { label: "Sex", value: profile.sex ?? "Unknown" },
-    { label: "Location", value: profile.location ?? "Unknown" },
+    { label: "Age", value: profile.age ?? "—" },
+    { label: "Sex", value: profile.sex ?? "—" },
+    { label: "Location", value: profile.location ?? "—" },
   ];
 
   return (
@@ -27,61 +41,44 @@ export default function PatientProfile({ profile }: { profile: Profile }) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="p-5 rounded-2xl bg-[var(--bg-card)] border border-[var(--border)]"
+      className="card p-5 rounded-2xl"
     >
-      <h3 className="text-sm font-semibold text-[var(--text-primary)] mb-3 flex items-center gap-2">
-        <svg width="16" height="16" fill="none" stroke="var(--accent)" strokeWidth="2" viewBox="0 0 24 24">
+      <h3 className="text-sm font-medium text-white mb-4 flex items-center gap-2">
+        <svg width="16" height="16" fill="none" stroke="var(--accent-light)" strokeWidth="1.75" viewBox="0 0 24 24">
           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
           <circle cx="12" cy="7" r="4" />
         </svg>
         Extracted Patient Profile
       </h3>
 
-      <div className="grid grid-cols-3 gap-3 mb-3">
+      <div className="grid grid-cols-3 gap-3 mb-4">
         {items.map((item) => (
-          <div key={item.label} className="p-2 rounded-lg bg-[var(--bg-primary)]/60">
-            <div className="text-[10px] uppercase tracking-wider text-[var(--text-secondary)]">
+          <div
+            key={item.label}
+            className="p-3 rounded-xl bg-white/[0.02] border border-[var(--border)]"
+          >
+            <div className="text-[10px] uppercase tracking-[0.15em] text-[var(--text-muted)]">
               {item.label}
             </div>
-            <div className="text-sm font-medium text-[var(--text-primary)]">
+            <div className="text-sm font-medium text-white mt-0.5">
               {String(item.value)}
             </div>
           </div>
         ))}
       </div>
 
-      <div className="flex flex-wrap gap-1.5">
+      <div className="flex flex-wrap gap-2">
         {profile.conditions?.map((c) => (
-          <span
-            key={c}
-            className="text-xs px-2 py-0.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300"
-          >
-            {c}
-          </span>
+          <Chip key={c} label={c} />
         ))}
         {profile.symptoms?.map((s) => (
-          <span
-            key={s}
-            className="text-xs px-2 py-0.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300"
-          >
-            {s}
-          </span>
+          <Chip key={s} label={s} />
         ))}
         {profile.medications?.map((m) => (
-          <span
-            key={m}
-            className="text-xs px-2 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-300"
-          >
-            {m}
-          </span>
+          <Chip key={m} label={m} />
         ))}
         {Object.entries(profile.lab_values || {}).map(([k, v]) => (
-          <span
-            key={k}
-            className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-300"
-          >
-            {k}: {v}
-          </span>
+          <Chip key={k} label={`${k}: ${v}`} accent />
         ))}
       </div>
     </motion.div>

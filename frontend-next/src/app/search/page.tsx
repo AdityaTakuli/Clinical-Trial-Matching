@@ -49,11 +49,10 @@ export default function SearchPage() {
   };
 
   return (
-    <div className="min-h-screen pt-24 pb-16">
+    <div className="min-h-screen pt-28 pb-16">
       {/* Background effects */}
       <div className="fixed top-0 left-0 w-full h-full pointer-events-none">
-        <div className="absolute top-40 right-20 w-[300px] h-[300px] rounded-full bg-[var(--accent)]/5 blur-[100px]" />
-        <div className="absolute bottom-40 left-20 w-[250px] h-[250px] rounded-full bg-purple-600/5 blur-[80px]" />
+        <div className="absolute top-32 right-10 w-[360px] h-[360px] rounded-full bg-[var(--accent)]/[0.06] blur-[120px]" />
       </div>
 
       <div className="relative max-w-7xl mx-auto px-6">
@@ -61,12 +60,16 @@ export default function SearchPage() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           className="text-center mb-10"
         >
-          <h1 className="text-3xl font-bold mb-2">
+          <span className="text-xs font-medium tracking-[0.2em] uppercase text-[var(--accent-light)]">
+            Trial Discovery
+          </span>
+          <h1 className="text-4xl lg:text-5xl font-semibold tracking-tight mt-3 mb-3 text-gradient">
             Search Clinical Trials
           </h1>
-          <p className="text-[var(--text-secondary)]">
+          <p className="text-[var(--text-secondary)] text-lg max-w-xl mx-auto">
             Describe a patient profile in natural language to find matched
             recruiting trials.
           </p>
@@ -84,7 +87,7 @@ export default function SearchPage() {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
-              className="max-w-3xl mx-auto mb-8 p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm"
+              className="max-w-3xl mx-auto mb-8 p-4 rounded-xl bg-red-500/[0.08] border border-red-500/25 text-red-300 text-sm"
             >
               {error}
             </motion.div>
@@ -109,20 +112,20 @@ export default function SearchPage() {
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="mb-8 p-4 rounded-xl bg-[var(--bg-card)] border border-[var(--border)]"
+                  className="card mb-8 p-4 rounded-2xl"
                 >
-                  <div className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-2">
+                  <div className="text-[11px] font-medium text-[var(--text-muted)] uppercase tracking-[0.15em] mb-3">
                     Matched Conditions
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {result.matched_conditions.map((c: any) => (
                       <span
                         key={c.condition}
-                        className="text-sm px-3 py-1 rounded-full bg-[var(--accent)]/10 border border-[var(--accent)]/30 text-[var(--accent-light)]"
+                        className="text-sm px-3 py-1 rounded-full bg-[var(--accent-soft)] border border-[var(--accent)]/25 text-[var(--accent-light)]"
                       >
                         {c.condition}{" "}
-                        <span className="text-[var(--text-secondary)]">
-                          ({Math.round(c.similarity * 100)}%)
+                        <span className="text-[var(--text-muted)]">
+                          {Math.round(c.similarity * 100)}%
                         </span>
                       </span>
                     ))}
@@ -136,7 +139,7 @@ export default function SearchPage() {
                   {/* Trial Cards */}
                   <div className="space-y-4">
                     <div className="flex items-center justify-between mb-2">
-                      <h2 className="text-lg font-semibold">
+                      <h2 className="text-lg font-medium text-white">
                         {result.trials.length} Matched Trial
                         {result.trials.length > 1 ? "s" : ""}
                       </h2>
@@ -158,9 +161,9 @@ export default function SearchPage() {
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.3 }}
-                      className="p-4 rounded-2xl bg-[var(--bg-card)] border border-[var(--border)]"
+                      className="card p-4 rounded-2xl"
                     >
-                      <h4 className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-2">
+                      <h4 className="text-[11px] font-medium text-[var(--text-muted)] uppercase tracking-[0.15em] mb-3">
                         Score Comparison
                       </h4>
                       <TrialComparisonChart trials={result.trials} />
@@ -172,9 +175,9 @@ export default function SearchPage() {
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.4 }}
-                        className="p-4 rounded-2xl bg-[var(--bg-card)] border border-[var(--border)]"
+                        className="card p-4 rounded-2xl"
                       >
-                        <h4 className="text-xs font-semibold text-[var(--text-secondary)] uppercase tracking-wider mb-2">
+                        <h4 className="text-[11px] font-medium text-[var(--text-muted)] uppercase tracking-[0.15em] mb-3">
                           Trial #{selectedTrial + 1} Breakdown
                         </h4>
                         <MatchRadar trial={result.trials[selectedTrial]} />

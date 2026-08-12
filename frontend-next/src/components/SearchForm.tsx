@@ -17,6 +17,7 @@ const EXAMPLE_QUERIES = [
 
 export default function SearchForm({ onSearch, loading }: SearchFormProps) {
   const [query, setQuery] = useState("");
+  const [focused, setFocused] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,21 +32,29 @@ export default function SearchForm({ onSearch, loading }: SearchFormProps) {
       onSubmit={handleSubmit}
       className="w-full"
     >
-      <div className="relative">
+      <div
+        className={`relative rounded-2xl transition-all duration-300 ${
+          focused ? "shadow-[0_0_0_1px_var(--accent),0_8px_40px_-8px_var(--accent-glow)]" : ""
+        }`}
+      >
         <textarea
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Describe the patient profile... (age, sex, conditions, medications, lab values, location)"
+          onFocus={() => setFocused(true)}
+          onBlur={() => setFocused(false)}
+          placeholder="Describe the patient profile — age, sex, conditions, medications, lab values, location…"
           rows={4}
-          className="w-full p-5 pr-16 rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-primary)] placeholder:text-[var(--text-secondary)]/50 focus:outline-none focus:border-[var(--accent)] focus:shadow-lg focus:shadow-[var(--accent-glow)] transition-all resize-none font-[family-name:var(--font-geist-sans)]"
+          className="w-full p-5 pr-16 rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] text-white placeholder:text-[var(--text-muted)] focus:outline-none focus:border-transparent transition-all resize-none"
           onKeyDown={(e) => {
             if ((e.metaKey || e.ctrlKey) && e.key === "Enter") handleSubmit(e);
           }}
         />
-        <button
+        <motion.button
           type="submit"
           disabled={loading || !query.trim()}
-          className="absolute bottom-4 right-4 w-10 h-10 rounded-full bg-[var(--accent)] text-white flex items-center justify-center hover:bg-[var(--accent-light)] disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-md shadow-[var(--accent-glow)]"
+          whileHover={{ scale: 1.06 }}
+          whileTap={{ scale: 0.94 }}
+          className="btn-primary absolute bottom-4 right-4 w-10 h-10 rounded-full flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed"
         >
           {loading ? (
             <motion.div
@@ -61,21 +70,25 @@ export default function SearchForm({ onSearch, loading }: SearchFormProps) {
               <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
           )}
-        </button>
+        </motion.button>
       </div>
 
-      <div className="mt-4">
-        <span className="text-xs text-[var(--text-secondary)] mr-2">Try:</span>
-        <div className="flex flex-wrap gap-2 mt-2">
+      <div className="mt-5">
+        <span className="text-xs text-[var(--text-muted)] uppercase tracking-[0.15em]">
+          Try an example
+        </span>
+        <div className="flex flex-wrap gap-2 mt-3">
           {EXAMPLE_QUERIES.map((example, i) => (
-            <button
+            <motion.button
               key={i}
               type="button"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
               onClick={() => setQuery(example)}
-              className="text-xs px-3 py-1.5 rounded-full border border-[var(--border)] text-[var(--text-secondary)] hover:text-[var(--accent-light)] hover:border-[var(--accent)]/40 transition-all"
+              className="text-xs px-3 py-1.5 rounded-full border border-[var(--border)] text-[var(--text-secondary)] hover:text-white hover:border-[var(--border-strong)] transition-all"
             >
-              {example.slice(0, 50)}...
-            </button>
+              {example.slice(0, 46)}…
+            </motion.button>
           ))}
         </div>
       </div>
@@ -86,25 +99,25 @@ export default function SearchForm({ onSearch, loading }: SearchFormProps) {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="mt-6"
+            className="mt-6 overflow-hidden"
           >
-            <div className="flex items-center gap-3 p-4 rounded-xl bg-[var(--accent)]/5 border border-[var(--accent)]/20">
+            <div className="flex items-center gap-3 p-4 rounded-xl bg-white/[0.03] border border-[var(--border)]">
               <div className="flex gap-1">
                 {[0, 1, 2].map((i) => (
                   <motion.div
                     key={i}
-                    animate={{ scale: [1, 1.3, 1] }}
+                    animate={{ scale: [1, 1.4, 1], opacity: [0.4, 1, 0.4] }}
                     transition={{
                       repeat: Infinity,
-                      duration: 0.8,
+                      duration: 0.9,
                       delay: i * 0.15,
                     }}
-                    className="w-2 h-2 rounded-full bg-[var(--accent)]"
+                    className="w-1.5 h-1.5 rounded-full bg-[var(--accent-light)]"
                   />
                 ))}
               </div>
-              <span className="text-sm text-[var(--accent-light)]">
-                Analyzing profile & searching trials...
+              <span className="text-sm text-[var(--text-secondary)]">
+                Analyzing profile &amp; searching trials…
               </span>
             </div>
           </motion.div>
