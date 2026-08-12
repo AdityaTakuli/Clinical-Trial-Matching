@@ -27,6 +27,21 @@ body {
   color: var(--text-primary);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
   scroll-behavior: smooth;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(108, 99, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(108, 99, 255, 0.025) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse at 50% 30%, black 0%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 30%, black 0%, transparent 70%);
 }
 
 ::selection {
