@@ -38,7 +38,7 @@ function AnimatedStat({ end, suffix = "", label, duration = 1.8 }: StatProps) {
       viewport={{ once: true }}
       className="relative"
     >
-      <div className="text-4xl lg:text-5xl font-semibold tracking-tight text-white tabular-nums">
+      <div className="text-4xl lg:text-5xl font-semibold tracking-tight text-[var(--text-primary)] tabular-nums">
         {count.toLocaleString()}
         <span className="text-[var(--accent-light)]">{suffix}</span>
       </div>

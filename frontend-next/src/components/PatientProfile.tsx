@@ -43,7 +43,7 @@ export default function PatientProfile({ profile }: { profile: Profile }) {
       transition={{ duration: 0.4 }}
       className="card p-5 rounded-2xl"
     >
-      <h3 className="text-sm font-medium text-white mb-4 flex items-center gap-2">
+      <h3 className="text-sm font-medium text-[var(--text-primary)] mb-4 flex items-center gap-2">
         <svg width="16" height="16" fill="none" stroke="var(--accent-light)" strokeWidth="1.75" viewBox="0 0 24 24">
           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
           <circle cx="12" cy="7" r="4" />
@@ -60,7 +60,7 @@ export default function PatientProfile({ profile }: { profile: Profile }) {
             <div className="text-[10px] uppercase tracking-[0.15em] text-[var(--text-muted)]">
               {item.label}
             </div>
-            <div className="text-sm font-medium text-white mt-0.5">
+            <div className="text-sm font-medium text-[var(--text-primary)] mt-0.5">
               {String(item.value)}
             </div>
           </div>

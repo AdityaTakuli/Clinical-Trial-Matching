@@ -1,23 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  /* Monochrome base */
-  --bg-primary: #000000;
-  --bg-secondary: #060606;
-  --bg-card: #0a0a0a;
-  --bg-card-hover: #101010;
-  --bg-elevated: #0d0d0d;
-
-  /* Hairline borders (white at low opacity) */
-  --border: rgba(255, 255, 255, 0.08);
-  --border-strong: rgba(255, 255, 255, 0.16);
-
-  /* Text */
-  --text-primary: #ffffff;
-  --text-secondary: #8b8b90;
-  --text-muted: #56565c;
-
-  /* Blue accent (matches globe) */
+  /* Blue accent (shared across themes, matches globe) */
   --accent: #2f74ff;
   --accent-hover: #1e5fe0;
   --accent-light: #5b95ff;
@@ -28,6 +12,47 @@
   --success: #34d399;
   --warning: #fbbf24;
   --danger: #f87171;
+
+  /* Grid line color */
+  --grid-line: rgba(0, 0, 0, 0.04);
+}
+
+/* ---- Dark theme (default) ---- */
+.dark {
+  --bg-primary: #000000;
+  --bg-secondary: #060606;
+  --bg-card: #0a0a0a;
+  --bg-card-hover: #101010;
+  --bg-elevated: #0d0d0d;
+
+  --border: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.16);
+
+  --text-primary: #ffffff;
+  --text-secondary: #8b8b90;
+  --text-muted: #56565c;
+
+  --accent-light: #5b95ff;
+  --grid-line: rgba(255, 255, 255, 0.035);
+}
+
+/* ---- Light theme ---- */
+.light {
+  --bg-primary: #fbfbfd;
+  --bg-secondary: #f4f4f7;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f7f7fa;
+  --bg-elevated: #ffffff;
+
+  --border: rgba(0, 0, 0, 0.09);
+  --border-strong: rgba(0, 0, 0, 0.18);
+
+  --text-primary: #0a0a0b;
+  --text-secondary: #55555f;
+  --text-muted: #8a8a92;
+
+  --accent-light: #1e5fe0;
+  --grid-line: rgba(0, 0, 0, 0.045);
 }
 
 * {
@@ -54,8 +79,8 @@ body::before {
   z-index: 0;
   pointer-events: none;
   background-image:
-    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
   background-size: 64px 64px;
   mask-image: radial-gradient(ellipse at 50% 20%, black 0%, transparent 75%);
   -webkit-mask-image: radial-gradient(ellipse at 50% 20%, black 0%, transparent 75%);
@@ -85,9 +110,16 @@ body::before {
 
 /* ---- Utilities ---- */
 
-/* White → gray headline gradient (monochrome, not colorful) */
-.text-gradient {
+/* Headline gradient (monochrome, theme-aware) */
+.dark .text-gradient {
   background: linear-gradient(180deg, #ffffff 0%, #9a9aa2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.light .text-gradient {
+  background: linear-gradient(180deg, #0a0a0b 0%, #55555f 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -99,7 +131,7 @@ body::before {
 }
 
 .glass {
-  background: rgba(8, 8, 8, 0.72);
+  background: color-mix(in srgb, var(--bg-primary) 72%, transparent);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border-bottom: 1px solid var(--border);

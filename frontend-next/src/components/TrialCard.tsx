@@ -117,12 +117,12 @@ export default function TrialCard({
             </span>
             <StatusBadge status={trial.eligibility_status} />
           </div>
-          <h3 className="text-base font-medium text-white leading-snug line-clamp-2">
+          <h3 className="text-base font-medium text-[var(--text-primary)] leading-snug line-clamp-2">
             {trial.title}
           </h3>
         </div>
         <div className="flex-shrink-0 text-right">
-          <div className="text-3xl font-semibold text-white tabular-nums">
+          <div className="text-3xl font-semibold text-[var(--text-primary)] tabular-nums">
             {Math.round((trial.score || 0) * 100)}
           </div>
           <div className="text-[10px] uppercase tracking-[0.12em] text-[var(--text-muted)]">
@@ -202,7 +202,7 @@ export default function TrialCard({
       {/* Eligibility Explanation */}
       {trial.eligibility_explanation && (
         <details className="mt-3 group/details">
-          <summary className="text-xs font-medium text-[var(--accent-light)] cursor-pointer hover:text-white transition-colors list-none">
+          <summary className="text-xs font-medium text-[var(--accent-light)] cursor-pointer hover:text-[var(--text-primary)] transition-colors list-none">
             View eligibility details →
           </summary>
           <motion.p

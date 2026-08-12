@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
@@ -22,7 +23,7 @@ export default function Navbar() {
       <div className="w-full px-6 h-16 flex items-center">
         {/* Left — Logo */}
         <Link href="/" className="flex items-center gap-2 group">
-          <span className="text-xl font-semibold tracking-tight text-white">
+          <span className="text-xl font-semibold tracking-tight text-[var(--text-primary)]">
             Trial<span className="text-[var(--accent-light)]">Match</span>
           </span>
         </Link>
@@ -40,8 +41,8 @@ export default function Navbar() {
                 <span
                   className={
                     active
-                      ? "text-white"
-                      : "text-[var(--text-secondary)] hover:text-white transition-colors"
+                      ? "text-[var(--text-primary)]"
+                      : "text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
                   }
                 >
                   {link.label}
@@ -66,12 +67,13 @@ export default function Navbar() {
           </motion.div>
         </div>
 
-        {/* Right — Auth buttons */}
+        {/* Right — Theme + Auth buttons */}
         <div className="flex items-center gap-2">
+          <ThemeToggle />
           <motion.button
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.96 }}
-            className="px-4 py-1.5 rounded-full text-sm text-[var(--text-secondary)] hover:text-white transition-colors"
+            className="px-4 py-1.5 rounded-full text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
           >
             Login
           </motion.button>

@@ -50,7 +50,7 @@ export default function FeatureCard({
         <div className="w-11 h-11 rounded-xl bg-white/[0.04] border border-[var(--border)] flex items-center justify-center mb-5 text-[var(--text-secondary)] group-hover:text-[var(--accent-light)] group-hover:border-[var(--accent)]/40 transition-colors">
           {icon}
         </div>
-        <h3 className="text-[1.05rem] font-medium text-white mb-2">{title}</h3>
+        <h3 className="text-[1.05rem] font-medium text-[var(--text-primary)] mb-2">{title}</h3>
         <p className="text-sm text-[var(--text-secondary)] leading-relaxed">
           {description}
         </p>

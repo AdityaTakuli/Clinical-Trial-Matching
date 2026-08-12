@@ -139,7 +139,7 @@ export default function SearchPage() {
                   {/* Trial Cards */}
                   <div className="space-y-4">
                     <div className="flex items-center justify-between mb-2">
-                      <h2 className="text-lg font-medium text-white">
+                      <h2 className="text-lg font-medium text-[var(--text-primary)]">
                         {result.trials.length} Matched Trial
                         {result.trials.length > 1 ? "s" : ""}
                       </h2>

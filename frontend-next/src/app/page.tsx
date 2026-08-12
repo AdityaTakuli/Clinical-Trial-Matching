@@ -141,7 +141,7 @@ export default function Home() {
                 <span className="hero-line block text-gradient">Find the right</span>
               </span>
               <span className="block overflow-hidden">
-                <span className="hero-line block text-white">clinical trial</span>
+                <span className="hero-line block text-[var(--text-primary)]">clinical trial</span>
               </span>
               <span className="block overflow-hidden">
                 <span className="hero-line block text-gradient">in seconds.</span>
