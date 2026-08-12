@@ -26,4 +26,5 @@ def semantic_match_node(state):
     return {
         **state,
         "matched_conditions": matched_conditions,
+        "condition_matches": matches,
     }
