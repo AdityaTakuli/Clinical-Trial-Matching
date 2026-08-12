@@ -3,6 +3,7 @@ from langgraph.graph import StateGraph, END
 from schemas import TrialMatchState
 
 from nodes.extract_query import extract_query_node
+from nodes.patient_profile import patient_profile_node
 from nodes.semantic_match import semantic_match_node
 from nodes.fetch_trials import fetch_trials_node
 from nodes.filter_rank import filter_rank_node
@@ -15,6 +16,11 @@ graph = StateGraph(TrialMatchState)
 graph.add_node(
     "extract_query",
     extract_query_node
+)
+
+graph.add_node(
+    "patient_profile",
+    patient_profile_node
 )
 
 graph.add_node(
@@ -45,6 +51,11 @@ graph.set_entry_point(
 
 graph.add_edge(
     "extract_query",
+    "patient_profile"
+)
+
+graph.add_edge(
+    "patient_profile",
     "semantic_match"
 )
 

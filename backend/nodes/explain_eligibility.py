@@ -16,7 +16,6 @@ def explain_eligibility(criteria: str) -> str:
     if not criteria:
         return "Eligibility criteria were not provided."
 
-
     prompt = f"""
 You are rewriting clinical trial eligibility criteria
 for a patient.
@@ -45,7 +44,6 @@ Eligibility criteria:
 {criteria}
 """
 
-
     response = client.chat.completions.create(
         model="llama-3.1-8b-instant",
         messages=[
@@ -64,7 +62,6 @@ Eligibility criteria:
         temperature=0
     )
 
-
     return response.choices[0].message.content
 
 
@@ -81,8 +78,22 @@ def explain_eligibility_node(state):
         )
 
         result = {
-            **trial,
+            "nct_id": trial.get("nct_id"),
+            "title": trial.get("title"),
+            "status": trial.get("status"),
+            "matched_condition": trial.get("matched_condition"),
+            "score": trial.get("ranking_score"),
+            "condition_similarity": trial.get("condition_similarity"),
+            "eligibility_score": trial.get("eligibility_score"),
+            "eligibility_status": trial.get("eligibility_status"),
+            "location_score": trial.get("location_score"),
+            "recency_score": trial.get("recency_score"),
+            "match_reasons": trial.get("match_reasons", []),
+            "unknown_information": trial.get("unknown_information", []),
+            "potential_conflicts": trial.get("potential_conflicts", []),
+            "eligibility": criteria,
             "eligibility_explanation": explanation,
+            "locations": trial.get("locations", []),
         }
 
         final_results.append(result)

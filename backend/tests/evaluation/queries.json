@@ -1,0 +1,32 @@
+[
+  {
+    "id": "diabetes_delhi",
+    "query": "I am a 25 year old male with high sugar living in Delhi. HbA1c is 8.2",
+    "expected_conditions": ["Type 2 Diabetes", "Hyperglycemia"],
+    "must_include_keywords": ["diabetes", "diabetic"]
+  },
+  {
+    "id": "asthma_boston",
+    "query": "45 year old female with asthma and shortness of breath near Boston",
+    "expected_conditions": ["Asthma"],
+    "must_include_keywords": ["asthma"]
+  },
+  {
+    "id": "hypertension_male",
+    "query": "60 year old male with high blood pressure taking aspirin",
+    "expected_conditions": ["Hypertension"],
+    "must_include_keywords": ["hypertension", "blood pressure"]
+  },
+  {
+    "id": "kidney_bmi",
+    "query": "55 year old female with chronic kidney disease, eGFR 42, BMI 28",
+    "expected_conditions": ["Chronic Kidney Disease"],
+    "must_include_keywords": ["kidney", "renal"]
+  },
+  {
+    "id": "diabetes_symptoms",
+    "query": "frequent urination and high blood sugar",
+    "expected_conditions": ["Hyperglycemia", "Type 2 Diabetes"],
+    "must_include_keywords": ["diabetes", "hyperglycemia", "sugar"]
+  }
+]
