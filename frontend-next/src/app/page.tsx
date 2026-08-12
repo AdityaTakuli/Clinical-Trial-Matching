@@ -1,12 +1,10 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import StatsCounter from "@/components/StatsCounter";
 import FeatureCard from "@/components/FeatureCard";
-
-const Globe = dynamic(() => import("@/components/Globe"), { ssr: false });
+import GlobeSection from "@/components/GlobeSection";
 
 export default function Home() {
   return (
@@ -51,35 +49,29 @@ export default function Home() {
             </p>
 
             <div className="flex items-center gap-4">
-              <Link
-                href="/search"
-                className="px-6 py-3 rounded-full bg-[var(--accent)] text-white font-medium hover:bg-[var(--accent-light)] transition-all shadow-lg shadow-[var(--accent-glow)] hover:shadow-xl hover:shadow-[var(--accent-glow)]"
-              >
-                Start Matching →
-              </Link>
-              <a
-                href="#features"
-                className="px-6 py-3 rounded-full border border-[var(--border)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--accent)]/50 transition-all"
-              >
-                Learn More
-              </a>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
+                <Link
+                  href="/search"
+                  className="inline-block px-6 py-3 rounded-full bg-[var(--accent)] text-white font-medium hover:bg-[var(--accent-light)] transition-all shadow-lg shadow-[var(--accent-glow)] hover:shadow-xl hover:shadow-[var(--accent-glow)]"
+                >
+                  Start Matching →
+                </Link>
+              </motion.div>
+              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }}>
+                <a
+                  href="#features"
+                  className="inline-block px-6 py-3 rounded-full border border-[var(--border)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--accent)]/50 transition-all"
+                >
+                  Learn More
+                </a>
+              </motion.div>
             </div>
           </motion.div>
 
           {/* Right - Globe */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, delay: 0.3 }}
-            className="h-[520px] lg:h-[620px] relative overflow-visible"
-          >
-            <Globe />
-            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 glass px-4 py-2 rounded-full">
-              <span className="text-xs text-[var(--text-secondary)]">
-                🌐 20+ countries • Live trial locations
-              </span>
-            </div>
-          </motion.div>
+          <div className="h-[520px] lg:h-[620px] relative">
+            <GlobeSection />
+          </div>
         </div>
       </section>
 
@@ -195,12 +187,14 @@ export default function Home() {
           <p className="text-[var(--text-secondary)] mb-8">
             Describe your condition in plain English. Our AI does the rest.
           </p>
-          <Link
-            href="/search"
-            className="inline-flex px-8 py-4 rounded-full bg-[var(--accent)] text-white font-medium text-lg hover:bg-[var(--accent-light)] transition-all shadow-lg shadow-[var(--accent-glow)] hover:shadow-xl"
-          >
-            Search Clinical Trials →
-          </Link>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.97 }} className="inline-block">
+            <Link
+              href="/search"
+              className="inline-flex px-8 py-4 rounded-full bg-[var(--accent)] text-white font-medium text-lg hover:bg-[var(--accent-light)] transition-all shadow-lg shadow-[var(--accent-glow)] hover:shadow-xl"
+            >
+              Search Clinical Trials →
+            </Link>
+          </motion.div>
         </motion.div>
       </section>
 
