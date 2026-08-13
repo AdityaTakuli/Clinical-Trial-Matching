@@ -1,5 +1,6 @@
 import logging
 import os
+from urllib.parse import urlparse
 
 from dotenv import load_dotenv
 import redis
@@ -17,9 +18,8 @@ _client: redis.Redis | None = None
 def get_redis() -> redis.Redis | None:
     """Return a shared Redis client, or None if Redis is unavailable.
 
-    The client is created lazily and cached. If the connection cannot be
-    established the function returns None so callers can degrade gracefully
-    instead of failing the request.
+    Works with local Redis (`redis://`) and Upstash (`rediss://`).
+    Fails open: returns None so cache/rate-limit degrade gracefully.
     """
     global _client
 
@@ -27,15 +27,18 @@ def get_redis() -> redis.Redis | None:
         return _client
 
     try:
+        # Remote Upstash needs a bit more than local Redis
+        timeout = 5 if REDIS_URL.startswith("rediss://") else 1
         client = redis.Redis.from_url(
             REDIS_URL,
-            socket_connect_timeout=1,
-            socket_timeout=1,
+            socket_connect_timeout=timeout,
+            socket_timeout=timeout,
             decode_responses=True,
         )
         client.ping()
         _client = client
-        logger.info("Connected to Redis at %s", REDIS_URL)
+        host = urlparse(REDIS_URL).hostname or "redis"
+        logger.info("Connected to Redis at %s", host)
         return _client
     except Exception as exc:
         logger.warning("Redis unavailable (%s): caching disabled", exc)
