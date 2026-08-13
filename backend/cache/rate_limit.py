@@ -11,14 +11,6 @@ WINDOW_SECONDS = 60
 
 
 def check_rate_limit(user_id: int) -> bool:
-    """Return True if the user may proceed, False if over the limit.
-
-    Uses a fixed-window counter in Redis:
-        trialmatch:rate:{user_id}:{window}
-
-    Fails open: if Redis is unavailable the request is allowed so the
-    limiter never takes the whole endpoint down.
-    """
     client = get_redis()
     if client is None:
         return True
