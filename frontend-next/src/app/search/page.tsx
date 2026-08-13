@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import SearchForm from "@/components/SearchForm";
 import TrialCard from "@/components/TrialCard";
 import PatientProfile from "@/components/PatientProfile";
 import { TrialComparisonChart, MatchRadar } from "@/components/ResultsChart";
+import { authFetch, isAuthenticated } from "@/lib/auth";
 
 interface SearchResult {
   query: string;
@@ -16,22 +18,35 @@ interface SearchResult {
 }
 
 export default function SearchPage() {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<SearchResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [selectedTrial, setSelectedTrial] = useState<number>(0);
 
   const handleSearch = async (query: string) => {
+    if (!isAuthenticated()) {
+      setError("Please log in to search clinical trials.");
+      router.push("/login");
+      return;
+    }
+
     setLoading(true);
     setError(null);
     setResult(null);
 
     try {
-      const response = await fetch("/api/search-trials", {
+      const response = await authFetch("/api/search-trials", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ query }),
       });
+
+      if (response.status === 401) {
+        setError("Your session has expired. Please log in again.");
+        router.push("/login");
+        return;
+      }
 
       const data = await response.json();
 

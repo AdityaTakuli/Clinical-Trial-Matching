@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import ThemeToggle from "@/components/ThemeToggle";
+import { AUTH_EVENT, clearAuth, getEmail } from "@/lib/auth";
 
 const NAV_LINKS = [
   { href: "/", label: "Home" },
@@ -12,6 +14,24 @@ const NAV_LINKS = [
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const [email, setEmail] = useState<string | null>(null);
+
+  useEffect(() => {
+    const sync = () => setEmail(getEmail());
+    sync();
+    window.addEventListener(AUTH_EVENT, sync);
+    window.addEventListener("storage", sync);
+    return () => {
+      window.removeEventListener(AUTH_EVENT, sync);
+      window.removeEventListener("storage", sync);
+    };
+  }, []);
+
+  const handleLogout = () => {
+    clearAuth();
+    router.push("/");
+  };
 
   return (
     <motion.nav
@@ -70,20 +90,40 @@ export default function Navbar() {
         {/* Right — Theme + Auth buttons */}
         <div className="flex items-center gap-2">
           <ThemeToggle />
-          <motion.button
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.96 }}
-            className="px-4 py-1.5 rounded-full text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
-          >
-            Login
-          </motion.button>
-          <motion.button
-            whileHover={{ scale: 1.04 }}
-            whileTap={{ scale: 0.96 }}
-            className="btn-ghost px-4 py-1.5 rounded-full text-sm"
-          >
-            Register
-          </motion.button>
+          {email ? (
+            <>
+              <span className="hidden sm:inline px-3 text-sm text-[var(--text-secondary)] max-w-[180px] truncate">
+                {email}
+              </span>
+              <motion.button
+                onClick={handleLogout}
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.96 }}
+                className="btn-ghost px-4 py-1.5 rounded-full text-sm"
+              >
+                Logout
+              </motion.button>
+            </>
+          ) : (
+            <>
+              <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
+                <Link
+                  href="/login"
+                  className="inline-flex px-4 py-1.5 rounded-full text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+                >
+                  Login
+                </Link>
+              </motion.div>
+              <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}>
+                <Link
+                  href="/register"
+                  className="btn-ghost inline-flex px-4 py-1.5 rounded-full text-sm"
+                >
+                  Register
+                </Link>
+              </motion.div>
+            </>
+          )}
         </div>
       </div>
     </motion.nav>

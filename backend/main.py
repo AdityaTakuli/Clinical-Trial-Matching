@@ -1,11 +1,8 @@
 import logging
 import time
-from pathlib import Path
 
 from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
-from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from sqlalchemy.orm import Session
@@ -23,8 +20,6 @@ from logging_config import new_request_id, setup_logging
 
 setup_logging()
 logger = logging.getLogger(__name__)
-
-FRONTEND_DIR = Path(__file__).resolve().parent.parent / "frontend"
 
 app = FastAPI(
     title="TrialMatch API",
@@ -73,12 +68,6 @@ async def log_requests(request: Request, call_next):
 
 @app.get("/")
 def root():
-
-    index_path = FRONTEND_DIR / "index.html"
-
-    if index_path.exists():
-        return FileResponse(index_path)
-
     return {
         "message": "TrialMatch API is running",
         "docs": "/docs",
@@ -190,11 +179,3 @@ async def search_trials(
     )
 
     return {**payload, "cached": False}
-
-
-if FRONTEND_DIR.exists():
-    app.mount(
-        "/static",
-        StaticFiles(directory=FRONTEND_DIR),
-        name="static",
-    )
