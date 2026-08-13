@@ -2,6 +2,7 @@ from typing import TypedDict
 
 
 class TrialMatchState(TypedDict):
+    user_id: int | None
     raw_query: str
     condition: str | None
     location: str | None

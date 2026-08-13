@@ -36,7 +36,7 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className="relative px-4 py-2 text-sm transition-colors"
+                className="relative px-4 py-2 tqext-sm transition-colors"
               >
                 <span
                   className={
