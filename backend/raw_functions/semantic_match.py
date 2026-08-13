@@ -10,7 +10,8 @@ CORPUS_PATH = BACKEND_DIR / "data" / "condition_corpus_500.json"
 EMBEDDINGS_PATH = BACKEND_DIR / "data" / "condition_embeddings.npz"
 
 MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
-model = SentenceTransformer(MODEL_NAME)
+
+_model: SentenceTransformer | None = None
 
 with open(CORPUS_PATH, "r", encoding="utf-8") as file:
     data = json.load(file)
@@ -19,7 +20,16 @@ corpus = data["corpus"]
 corpus_embeddings = np.load(EMBEDDINGS_PATH)["embeddings"]
 
 
+def _get_model() -> SentenceTransformer:
+    """Load the embedding model on first use so the server can bind PORT first."""
+    global _model
+    if _model is None:
+        _model = SentenceTransformer(MODEL_NAME)
+    return _model
+
+
 def semantic_match(query: str, top_k: int = 3):
+    model = _get_model()
 
     query_embedding = model.encode(
         query,
