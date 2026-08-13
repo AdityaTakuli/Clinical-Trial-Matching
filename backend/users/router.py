@@ -28,6 +28,11 @@ class SaveTrialRequest(BaseModel):
     title: str | None = None
 
 
+class SaveTrialBody(BaseModel):
+    nct_id: str
+    title: str | None = None
+
+
 class SavedTrialItem(BaseModel):
     id: int
     nct_id: str
@@ -38,6 +43,7 @@ class SavedTrialItem(BaseModel):
         from_attributes = True
 
 
+@router.get("/search-history", response_model=list[SearchHistoryItem])
 @router.get("/users/me/search-history", response_model=list[SearchHistoryItem])
 def get_search_history(
     current_user: User = Depends(get_current_user),
@@ -66,34 +72,11 @@ def clear_search_history(
     return {"deleted": deleted}
 
 
-@router.get("/users/me/saved-trials", response_model=list[SavedTrialItem])
-def get_saved_trials(
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db),
-):
-    return (
-        db.query(SavedTrial)
-        .filter(SavedTrial.user_id == current_user.id)
-        .order_by(SavedTrial.created_at.desc())
-        .all()
-    )
-
-
-@router.post(
-    "/trials/{nct_id}/save",
-    response_model=SavedTrialItem,
-    status_code=status.HTTP_201_CREATED,
-)
-def save_trial(
-    nct_id: str,
-    request: SaveTrialRequest | None = None,
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db),
-):
+def _persist_saved_trial(db, user_id, nct_id, title):
     saved = SavedTrial(
-        user_id=current_user.id,
+        user_id=user_id,
         nct_id=nct_id,
-        title=request.title if request else None,
+        title=title,
     )
 
     db.add(saved)
@@ -111,6 +94,53 @@ def save_trial(
     return saved
 
 
+@router.get("/saved-trials", response_model=list[SavedTrialItem])
+@router.get("/users/me/saved-trials", response_model=list[SavedTrialItem])
+def get_saved_trials(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    return (
+        db.query(SavedTrial)
+        .filter(SavedTrial.user_id == current_user.id)
+        .order_by(SavedTrial.created_at.desc())
+        .all()
+    )
+
+
+@router.post(
+    "/saved-trials",
+    response_model=SavedTrialItem,
+    status_code=status.HTTP_201_CREATED,
+)
+def save_trial_body(
+    body: SaveTrialBody,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    return _persist_saved_trial(db, current_user.id, body.nct_id, body.title)
+
+
+@router.post(
+    "/trials/{nct_id}/save",
+    response_model=SavedTrialItem,
+    status_code=status.HTTP_201_CREATED,
+)
+def save_trial(
+    nct_id: str,
+    request: SaveTrialRequest | None = None,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    return _persist_saved_trial(
+        db,
+        current_user.id,
+        nct_id,
+        request.title if request else None,
+    )
+
+
+@router.delete("/saved-trials/{nct_id}", status_code=status.HTTP_200_OK)
 @router.delete("/trials/{nct_id}/save", status_code=status.HTTP_200_OK)
 def unsave_trial(
     nct_id: str,
