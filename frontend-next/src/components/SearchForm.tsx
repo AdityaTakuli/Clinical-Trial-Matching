@@ -44,7 +44,7 @@ export default function SearchForm({ onSearch, loading }: SearchFormProps) {
           onBlur={() => setFocused(false)}
           placeholder="Describe the patient profile — age, sex, conditions, medications, lab values, location…"
           rows={4}
-          className="w-full p-5 pr-16 rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-transparent transition-all resize-none"
+          className="w-full p-4 sm:p-5 pr-14 sm:pr-16 rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-transparent transition-all resize-none text-sm sm:text-base min-h-[120px]"
           onKeyDown={(e) => {
             if ((e.metaKey || e.ctrlKey) && e.key === "Enter") handleSubmit(e);
           }}
@@ -85,9 +85,10 @@ export default function SearchForm({ onSearch, loading }: SearchFormProps) {
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               onClick={() => setQuery(example)}
-              className="text-xs px-3 py-1.5 rounded-full border border-[var(--border)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-strong)] transition-all"
+              className="text-xs px-3 py-1.5 rounded-full border border-[var(--border)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-strong)] transition-all max-w-full text-left truncate"
             >
-              {example.slice(0, 46)}…
+              <span className="sm:hidden">{example.slice(0, 32)}…</span>
+              <span className="hidden sm:inline">{example.slice(0, 46)}…</span>
             </motion.button>
           ))}
         </div>

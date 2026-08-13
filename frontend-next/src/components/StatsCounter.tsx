@@ -38,18 +38,18 @@ function AnimatedStat({ end, suffix = "", label, duration = 1.8 }: StatProps) {
       viewport={{ once: true }}
       className="relative"
     >
-      <div className="text-4xl lg:text-5xl font-semibold tracking-tight text-[var(--text-primary)] tabular-nums">
+      <div className="text-2xl sm:text-4xl lg:text-5xl font-semibold tracking-tight text-[var(--text-primary)] tabular-nums">
         {count.toLocaleString()}
         <span className="text-[var(--accent-light)]">{suffix}</span>
       </div>
-      <div className="text-sm text-[var(--text-secondary)] mt-2">{label}</div>
+      <div className="text-xs sm:text-sm text-[var(--text-secondary)] mt-1.5 sm:mt-2">{label}</div>
     </motion.div>
   );
 }
 
 export default function StatsCounter() {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+    <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
       <AnimatedStat end={450000} suffix="+" label="Active Trials" />
       <AnimatedStat end={195} label="Countries" />
       <AnimatedStat end={98} suffix="%" label="Match Accuracy" />

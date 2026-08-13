@@ -64,27 +64,27 @@ export default function SearchPage() {
   };
 
   return (
-    <div className="min-h-screen pt-28 pb-16">
+    <div className="min-h-screen pt-24 sm:pt-28 pb-12 sm:pb-16 overflow-x-hidden">
       {/* Background effects */}
       <div className="fixed top-0 left-0 w-full h-full pointer-events-none">
-        <div className="absolute top-32 right-10 w-[360px] h-[360px] rounded-full bg-[var(--accent)]/[0.06] blur-[120px]" />
+        <div className="absolute top-32 right-0 sm:right-10 w-[min(360px,80vw)] h-[min(360px,80vw)] rounded-full bg-[var(--accent)]/[0.06] blur-[120px]" />
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-6">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="text-center mb-10"
+          className="text-center mb-8 sm:mb-10"
         >
           <span className="text-xs font-medium tracking-[0.2em] uppercase text-[var(--accent-light)]">
             Trial Discovery
           </span>
-          <h1 className="text-4xl lg:text-5xl font-semibold tracking-tight mt-3 mb-3 text-gradient">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-semibold tracking-tight mt-3 mb-3 text-gradient">
             Search Clinical Trials
           </h1>
-          <p className="text-[var(--text-secondary)] text-lg max-w-xl mx-auto">
+          <p className="text-[var(--text-secondary)] text-base sm:text-lg max-w-xl mx-auto px-1">
             Describe a patient profile in natural language to find matched
             recruiting trials.
           </p>
@@ -150,11 +150,11 @@ export default function SearchPage() {
 
               {/* Charts + Results Grid */}
               {result.trials?.length > 0 && (
-                <div className="grid lg:grid-cols-[1fr_320px] gap-6">
+                <div className="grid lg:grid-cols-[minmax(0,1fr)_minmax(260px,320px)] gap-4 sm:gap-6">
                   {/* Trial Cards */}
-                  <div className="space-y-4">
+                  <div className="space-y-4 min-w-0">
                     <div className="flex items-center justify-between mb-2">
-                      <h2 className="text-lg font-medium text-[var(--text-primary)]">
+                      <h2 className="text-base sm:text-lg font-medium text-[var(--text-primary)]">
                         {result.trials.length} Matched Trial
                         {result.trials.length > 1 ? "s" : ""}
                       </h2>
@@ -163,7 +163,7 @@ export default function SearchPage() {
                       <div
                         key={trial.nct_id || i}
                         onClick={() => setSelectedTrial(i)}
-                        className="cursor-pointer"
+                        className="cursor-pointer min-w-0"
                       >
                         <TrialCard trial={trial} index={i} />
                       </div>
@@ -171,7 +171,7 @@ export default function SearchPage() {
                   </div>
 
                   {/* Sidebar Charts */}
-                  <div className="space-y-4 lg:sticky lg:top-24 lg:self-start">
+                  <div className="space-y-4 lg:sticky lg:top-24 lg:self-start min-w-0">
                     <motion.div
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}

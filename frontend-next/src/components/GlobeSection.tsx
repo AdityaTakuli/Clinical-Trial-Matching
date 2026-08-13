@@ -84,7 +84,7 @@ export default function GlobeSection() {
     >
       {/* Glow backdrop */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <div className="w-[420px] h-[420px] rounded-full bg-[var(--accent)]/[0.12] blur-[90px]" />
+        <div className="w-[min(420px,90%)] aspect-square rounded-full bg-[var(--accent)]/[0.12] blur-[90px]" />
       </div>
 
       {/* Globe — remount on theme change so colors re-init cleanly */}
@@ -101,10 +101,10 @@ export default function GlobeSection() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 1.5, duration: 0.5 }}
-        className="absolute bottom-6 left-1/2 -translate-x-1/2 px-4 py-2 rounded-full bg-[var(--bg-card)]/70 backdrop-blur-md border border-[var(--border)]"
+        className="absolute bottom-3 sm:bottom-6 left-1/2 -translate-x-1/2 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full bg-[var(--bg-card)]/70 backdrop-blur-md border border-[var(--border)] max-w-[calc(100%-1.5rem)]"
       >
-        <span className="text-xs text-[var(--text-secondary)] flex items-center gap-2">
-          <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-light)] animate-pulse" />
+        <span className="text-[10px] sm:text-xs text-[var(--text-secondary)] flex items-center gap-2 whitespace-nowrap">
+          <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-light)] animate-pulse shrink-0" />
           20+ countries · Live trial locations
         </span>
       </motion.div>

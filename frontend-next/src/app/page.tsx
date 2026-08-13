@@ -122,21 +122,21 @@ export default function Home() {
   return (
     <div ref={container} className="relative">
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center pt-16">
+      <section className="relative min-h-[100svh] flex items-center pt-16 pb-10 lg:pb-0">
         {/* Ambient blue glow */}
-        <div className="absolute top-1/4 right-0 w-[600px] h-[600px] rounded-full bg-[var(--accent)]/[0.07] blur-[140px] pointer-events-none" />
+        <div className="absolute top-1/4 right-0 w-[min(600px,100vw)] h-[min(600px,100vw)] rounded-full bg-[var(--accent)]/[0.07] blur-[140px] pointer-events-none" />
 
-        <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-center w-full">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 grid lg:grid-cols-2 gap-8 lg:gap-12 items-center w-full">
           {/* Left - Text */}
-          <div>
-            <div className="hero-fade inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.04] border border-[var(--border)] mb-7">
-              <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-light)] animate-pulse" />
-              <span className="text-xs text-[var(--text-secondary)] tracking-wide">
+          <div className="min-w-0">
+            <div className="hero-fade inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.04] border border-[var(--border)] mb-5 sm:mb-7 max-w-full">
+              <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent-light)] animate-pulse shrink-0" />
+              <span className="text-[11px] sm:text-xs text-[var(--text-secondary)] tracking-wide truncate">
                 AI-Powered Clinical Trial Matching
               </span>
             </div>
 
-            <h1 className="text-5xl lg:text-[4.2rem] font-semibold leading-[1.05] tracking-tight mb-7">
+            <h1 className="text-[2.35rem] sm:text-5xl lg:text-[4.2rem] font-semibold leading-[1.08] tracking-tight mb-5 sm:mb-7">
               <span className="block overflow-hidden">
                 <span className="hero-line block text-gradient">Find the right</span>
               </span>
@@ -148,17 +148,17 @@ export default function Home() {
               </span>
             </h1>
 
-            <p className="hero-fade text-lg text-[var(--text-secondary)] mb-9 max-w-lg leading-relaxed">
+            <p className="hero-fade text-base sm:text-lg text-[var(--text-secondary)] mb-7 sm:mb-9 max-w-lg leading-relaxed">
               TrialMatch uses semantic AI to connect patients with recruiting
               clinical trials worldwide. Describe your condition and get
               personalized matches instantly.
             </p>
 
-            <div className="hero-fade flex items-center gap-3">
+            <div className="hero-fade flex flex-wrap items-center gap-3">
               <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
                 <Link
                   href="/search"
-                  className="btn-primary inline-flex items-center gap-2 px-6 py-3 rounded-full font-medium"
+                  className="btn-primary inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full font-medium text-sm sm:text-base"
                 >
                   Start Matching
                   <span aria-hidden>→</span>
@@ -167,7 +167,7 @@ export default function Home() {
               <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
                 <a
                   href="#features"
-                  className="btn-ghost inline-flex px-6 py-3 rounded-full"
+                  className="btn-ghost inline-flex px-5 sm:px-6 py-2.5 sm:py-3 rounded-full text-sm sm:text-base"
                 >
                   Learn More
                 </a>
@@ -176,36 +176,36 @@ export default function Home() {
           </div>
 
           {/* Right - Globe */}
-          <div className="h-[520px] lg:h-[620px] relative">
+          <div className="h-[300px] sm:h-[420px] lg:h-[620px] relative -mx-2 sm:mx-0">
             <GlobeSection />
           </div>
         </div>
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 border-t border-[var(--border)]">
-        <div className="max-w-7xl mx-auto px-6">
+      <section className="py-12 sm:py-20 border-t border-[var(--border)]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <StatsCounter />
         </div>
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-28">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="reveal max-w-2xl mb-16">
+      <section id="features" className="py-16 sm:py-28">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="reveal max-w-2xl mb-10 sm:mb-16">
             <span className="text-xs font-medium tracking-[0.2em] uppercase text-[var(--accent-light)]">
               How it works
             </span>
-            <h2 className="text-3xl lg:text-5xl font-semibold tracking-tight mt-3 mb-4 text-gradient">
+            <h2 className="text-2xl sm:text-3xl lg:text-5xl font-semibold tracking-tight mt-3 mb-4 text-gradient">
               A precise matching pipeline
             </h2>
-            <p className="text-[var(--text-secondary)] text-lg">
+            <p className="text-[var(--text-secondary)] text-base sm:text-lg">
               Every query flows through multiple AI stages to surface the most
               relevant clinical trials.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
             {FEATURES.map((feature, i) => (
               <FeatureCard
                 key={feature.title}
@@ -233,25 +233,25 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-28 relative">
-        <div className="reveal max-w-4xl mx-auto px-6">
-          <div className="card relative overflow-hidden rounded-3xl px-8 py-16 text-center">
+      <section className="py-16 sm:py-28 relative">
+        <div className="reveal max-w-4xl mx-auto px-4 sm:px-6">
+          <div className="card relative overflow-hidden rounded-2xl sm:rounded-3xl px-5 sm:px-8 py-10 sm:py-16 text-center">
             <div className="absolute inset-0 bg-gradient-to-b from-[var(--accent)]/[0.06] to-transparent pointer-events-none" />
             <div className="relative">
-              <h2 className="text-3xl lg:text-4xl font-semibold tracking-tight mb-4 text-gradient">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold tracking-tight mb-4 text-gradient">
                 Ready to find your match?
               </h2>
-              <p className="text-[var(--text-secondary)] text-lg mb-8 max-w-xl mx-auto">
+              <p className="text-[var(--text-secondary)] text-base sm:text-lg mb-6 sm:mb-8 max-w-xl mx-auto">
                 Describe your condition in plain English. Our AI does the rest.
               </p>
               <motion.div
                 whileHover={{ scale: 1.04 }}
                 whileTap={{ scale: 0.97 }}
-                className="inline-block"
+                className="inline-block max-w-full"
               >
                 <Link
                   href="/search"
-                  className="btn-primary inline-flex items-center gap-2 px-8 py-4 rounded-full font-medium text-lg"
+                  className="btn-primary inline-flex items-center gap-2 px-6 sm:px-8 py-3 sm:py-4 rounded-full font-medium text-base sm:text-lg"
                 >
                   Search Clinical Trials
                   <span aria-hidden>→</span>
@@ -264,7 +264,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="border-t border-[var(--border)] py-8">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-2">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-2 text-center md:text-left">
           <span className="text-sm text-[var(--text-secondary)]">
             © 2026 TrialMatch. For informational purposes only.
           </span>

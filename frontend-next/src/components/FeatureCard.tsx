@@ -36,7 +36,7 @@ export default function FeatureCard({
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] }}
       whileHover={{ y: -4 }}
-      className="card group relative p-6 rounded-2xl overflow-hidden"
+      className="card group relative p-5 sm:p-6 rounded-2xl overflow-hidden"
     >
       {/* Spotlight */}
       <div

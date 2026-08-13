@@ -69,6 +69,15 @@ body {
   scroll-behavior: smooth;
   position: relative;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* Prevent media from overflowing the viewport */
+img,
+video,
+canvas {
+  max-width: 100%;
+  height: auto;
 }
 
 /* Graph-paper grid, fading from top */

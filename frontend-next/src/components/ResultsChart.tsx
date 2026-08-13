@@ -46,7 +46,7 @@ export function MatchRadar({ trial }: { trial: Trial }) {
       className="w-full h-[200px]"
     >
       <ResponsiveContainer>
-        <RadarChart data={data} margin={{ top: 10, right: 30, bottom: 10, left: 30 }}>
+        <RadarChart data={data} margin={{ top: 8, right: 16, bottom: 8, left: 16 }}>
           <PolarGrid stroke={GRID} />
           <PolarAngleAxis dataKey="metric" tick={{ fill: AXIS, fontSize: 11 }} />
           <PolarRadiusAxis angle={90} domain={[0, 100]} tick={{ fill: MUTED, fontSize: 9 }} />

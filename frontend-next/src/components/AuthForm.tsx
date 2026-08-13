@@ -41,12 +41,12 @@ export default function AuthForm({ mode }: AuthFormProps) {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6 pt-28 pb-16">
+    <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 pt-24 sm:pt-28 pb-12 sm:pb-16">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className="card w-full max-w-md rounded-2xl p-8"
+        className="card w-full max-w-md rounded-2xl p-5 sm:p-8"
       >
         <h1 className="text-2xl font-semibold tracking-tight text-[var(--text-primary)]">
           {isLogin ? "Welcome back" : "Create your account"}

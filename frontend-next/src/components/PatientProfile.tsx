@@ -41,26 +41,26 @@ export default function PatientProfile({ profile }: { profile: Profile }) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className="card p-5 rounded-2xl"
+      className="card p-4 sm:p-5 rounded-2xl min-w-0"
     >
       <h3 className="text-sm font-medium text-[var(--text-primary)] mb-4 flex items-center gap-2">
-        <svg width="16" height="16" fill="none" stroke="var(--accent-light)" strokeWidth="1.75" viewBox="0 0 24 24">
+        <svg width="16" height="16" fill="none" stroke="var(--accent-light)" strokeWidth="1.75" viewBox="0 0 24 24" className="shrink-0">
           <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
           <circle cx="12" cy="7" r="4" />
         </svg>
         Extracted Patient Profile
       </h3>
 
-      <div className="grid grid-cols-3 gap-3 mb-4">
+      <div className="grid grid-cols-3 gap-2 sm:gap-3 mb-4">
         {items.map((item) => (
           <div
             key={item.label}
-            className="p-3 rounded-xl bg-white/[0.02] border border-[var(--border)]"
+            className="p-2.5 sm:p-3 rounded-xl bg-white/[0.02] border border-[var(--border)] min-w-0"
           >
             <div className="text-[10px] uppercase tracking-[0.15em] text-[var(--text-muted)]">
               {item.label}
             </div>
-            <div className="text-sm font-medium text-[var(--text-primary)] mt-0.5">
+            <div className="text-xs sm:text-sm font-medium text-[var(--text-primary)] mt-0.5 truncate">
               {String(item.value)}
             </div>
           </div>

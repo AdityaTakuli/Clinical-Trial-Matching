@@ -107,22 +107,22 @@ export default function TrialCard({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.1 }}
       whileHover={{ y: -3 }}
-      className="card p-6 rounded-2xl group"
+      className="card p-4 sm:p-6 rounded-2xl group min-w-0"
     >
-      <div className="flex items-start justify-between gap-4 mb-4">
+      <div className="flex items-start justify-between gap-3 sm:gap-4 mb-4">
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2 mb-2">
+          <div className="flex items-center gap-2 mb-2 flex-wrap">
             <span className="text-xs px-2 py-0.5 rounded bg-white/[0.05] border border-[var(--border)] text-[var(--text-secondary)] font-mono">
               {trial.nct_id}
             </span>
             <StatusBadge status={trial.eligibility_status} />
           </div>
-          <h3 className="text-base font-medium text-[var(--text-primary)] leading-snug line-clamp-2">
+          <h3 className="text-sm sm:text-base font-medium text-[var(--text-primary)] leading-snug line-clamp-3 sm:line-clamp-2">
             {trial.title}
           </h3>
         </div>
         <div className="flex-shrink-0 text-right">
-          <div className="text-3xl font-semibold text-[var(--text-primary)] tabular-nums">
+          <div className="text-2xl sm:text-3xl font-semibold text-[var(--text-primary)] tabular-nums">
             {Math.round((trial.score || 0) * 100)}
           </div>
           <div className="text-[10px] uppercase tracking-[0.12em] text-[var(--text-muted)]">
@@ -143,7 +143,7 @@ export default function TrialCard({
       </div>
 
       {/* Score Rings */}
-      <div className="flex items-center gap-4 mb-4 p-3 rounded-xl bg-white/[0.02] border border-[var(--border)]">
+      <div className="flex items-center justify-around sm:justify-start gap-3 sm:gap-4 mb-4 p-3 rounded-xl bg-white/[0.02] border border-[var(--border)] overflow-x-auto">
         <ScoreRing
           value={trial.condition_similarity || 0}
           label="Condition"
