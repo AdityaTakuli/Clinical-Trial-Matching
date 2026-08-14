@@ -27,6 +27,22 @@ def _empty_profile() -> dict:
     }
 
 
+def _dedupe_strings(values: list) -> list[str]:
+    """Case-insensitive de-dupe while keeping the first seen casing."""
+    seen: set[str] = set()
+    result: list[str] = []
+    for value in values or []:
+        text = str(value).strip()
+        if not text:
+            continue
+        key = text.lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        result.append(text)
+    return result
+
+
 def extract_patient_profile_llm(query: str) -> dict:
 
     prompt = f"""
@@ -86,6 +102,9 @@ Rules:
 
         profile["lab_values"] = lab_values
 
+        for key in ("conditions", "symptoms", "medications", "medical_history"):
+            profile[key] = _dedupe_strings(profile.get(key) or [])
+
         return profile
 
     except Exception:
@@ -106,12 +125,17 @@ def extract_patient_profile(query: str) -> dict:
         merged[key] = llm_profile.get(key) or regex_profile.get(key)
 
     for key in ("conditions", "symptoms", "medications", "medical_history"):
-        merged[key] = list(
-            dict.fromkeys(
-                (llm_profile.get(key) or [])
-                + (regex_profile.get(key) or [])
-            )
+        merged[key] = _dedupe_strings(
+            (llm_profile.get(key) or []) + (regex_profile.get(key) or [])
         )
+
+    # Avoid duplicating the same condition under medical_history
+    condition_keys = {c.lower() for c in merged["conditions"]}
+    merged["medical_history"] = [
+        item
+        for item in merged["medical_history"]
+        if item.lower() not in condition_keys
+    ]
 
     merged["lab_values"] = {
         **(regex_profile.get("lab_values") or {}),

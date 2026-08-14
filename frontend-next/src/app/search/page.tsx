@@ -8,6 +8,7 @@ import TrialCard from "@/components/TrialCard";
 import PatientProfile from "@/components/PatientProfile";
 import { TrialComparisonChart, MatchRadar } from "@/components/ResultsChart";
 import { authFetch, isAuthenticated } from "@/lib/auth";
+import { parseJsonResponse } from "@/lib/api";
 
 interface SearchResult {
   query: string;
@@ -48,10 +49,16 @@ export default function SearchPage() {
         return;
       }
 
-      const data = await response.json();
+      const data = await parseJsonResponse<any>(response);
 
       if (!response.ok) {
-        throw new Error(data.detail || "Search failed");
+        const detail =
+          typeof data?.detail === "string"
+            ? data.detail
+            : Array.isArray(data?.detail) && data.detail[0]?.msg
+              ? data.detail[0].msg
+              : "Search failed";
+        throw new Error(detail);
       }
 
       setResult(data);

@@ -1,3 +1,5 @@
+import { parseJsonResponse } from "@/lib/api";
+
 const TOKEN_KEY = "trialmatch_token";
 const EMAIL_KEY = "trialmatch_email";
 
@@ -35,9 +37,13 @@ export function clearAuth() {
 
 async function parseError(response: Response, fallback: string): Promise<string> {
   try {
-    const data = await response.json();
+    const data = await parseJsonResponse<{ detail?: string | { msg?: string }[] }>(
+      response.clone()
+    );
     if (typeof data?.detail === "string") return data.detail;
-    if (Array.isArray(data?.detail) && data.detail[0]?.msg) return data.detail[0].msg;
+    if (Array.isArray(data?.detail) && data.detail[0]?.msg) {
+      return data.detail[0].msg ?? fallback;
+    }
   } catch {
     // ignore JSON parse errors
   }
@@ -55,7 +61,10 @@ export async function login(email: string, password: string): Promise<void> {
     throw new Error(await parseError(response, "Login failed"));
   }
 
-  const data = await response.json();
+  const data = await parseJsonResponse<{ access_token?: string }>(response);
+  if (!data?.access_token) {
+    throw new Error("Login succeeded but no access token was returned.");
+  }
   setAuth(data.access_token, email);
 }
 
