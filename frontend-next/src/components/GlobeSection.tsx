@@ -66,76 +66,9 @@ const trialArcs = [
   { order: 12, startLat: 35.6, startLng: 139.6, endLat: 48.8, endLng: 2.35, arcAlt: 0.25, color: arcColors[2] },
 ];
 
-/**
- * Decide whether to render the heavy WebGL globe.
- * Phones and reduced-motion users get a lightweight CSS fallback so the
- * three.js chunk never downloads and the GPU isn't hammered.
- */
-function useCanRenderGlobe(): boolean | null {
-  const [canRender, setCanRender] = useState<boolean | null>(null);
-
-  useEffect(() => {
-    const evaluate = () => {
-      const wideEnough = window.matchMedia("(min-width: 768px)").matches;
-      const reducedMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)"
-      ).matches;
-      const cores = navigator.hardwareConcurrency ?? 4;
-      setCanRender(wideEnough && !reducedMotion && cores >= 4);
-    };
-
-    evaluate();
-
-    const mq = window.matchMedia("(min-width: 768px)");
-    mq.addEventListener("change", evaluate);
-    return () => mq.removeEventListener("change", evaluate);
-  }, []);
-
-  return canRender;
-}
-
-function StaticGlobe({ isLight }: { isLight: boolean }) {
-  return (
-    <div className="relative w-full h-full flex items-center justify-center">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.85 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-        className="relative w-[min(70vw,260px)] aspect-square"
-      >
-        {/* Sphere */}
-        <div
-          className="absolute inset-0 rounded-full border border-[var(--border)]"
-          style={{
-            background: isLight
-              ? "radial-gradient(circle at 32% 28%, #eaf2fe 0%, #bcd7f7 45%, #7fb0ef 100%)"
-              : "radial-gradient(circle at 32% 28%, #24406e 0%, #14213d 55%, #0a0f1f 100%)",
-            boxShadow: "0 18px 60px -20px var(--accent-glow)",
-          }}
-        />
-        {/* Meridians / parallels */}
-        <div
-          className="absolute inset-0 rounded-full opacity-40"
-          style={{
-            background:
-              "repeating-linear-gradient(0deg, transparent 0 22px, var(--accent-soft) 22px 23px), repeating-linear-gradient(90deg, transparent 0 22px, var(--accent-soft) 22px 23px)",
-            maskImage: "radial-gradient(circle at 50% 50%, black 62%, transparent 72%)",
-            WebkitMaskImage:
-              "radial-gradient(circle at 50% 50%, black 62%, transparent 72%)",
-          }}
-        />
-        {/* Orbit ring */}
-        <div className="absolute inset-[-8%] rounded-full border border-[var(--accent)]/25 animate-[spin_18s_linear_infinite]" />
-        <span className="absolute top-1/2 left-[-2%] w-2 h-2 rounded-full bg-[var(--accent-light)] shadow-[0_0_12px_var(--accent-glow)]" />
-      </motion.div>
-    </div>
-  );
-}
-
 export default function GlobeSection() {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
-  const canRenderGlobe = useCanRenderGlobe();
 
   useEffect(() => setMounted(true), []);
 
@@ -154,17 +87,12 @@ export default function GlobeSection() {
         <div className="w-[min(420px,90%)] aspect-square rounded-full bg-[var(--accent)]/[0.12] blur-[90px]" />
       </div>
 
-      {/* Globe — WebGL on capable devices, CSS fallback on phones */}
       <div className="w-full h-full">
-        {canRenderGlobe === null ? null : canRenderGlobe ? (
-          <World
-            key={isLight ? "light" : "dark"}
-            globeConfig={globeConfig}
-            data={trialArcs}
-          />
-        ) : (
-          <StaticGlobe isLight={isLight} />
-        )}
+        <World
+          key={isLight ? "light" : "dark"}
+          globeConfig={globeConfig}
+          data={trialArcs}
+        />
       </div>
 
       {/* Floating label */}

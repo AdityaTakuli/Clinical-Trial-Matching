@@ -2,13 +2,22 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import dynamic from "next/dynamic";
 import { motion, AnimatePresence } from "framer-motion";
 import SearchForm from "@/components/SearchForm";
 import TrialCard from "@/components/TrialCard";
 import PatientProfile from "@/components/PatientProfile";
-import { TrialComparisonChart, MatchRadar } from "@/components/ResultsChart";
 import { authFetch, isAuthenticated } from "@/lib/auth";
 import { parseJsonResponse } from "@/lib/api";
+
+const TrialComparisonChart = dynamic(
+  () => import("@/components/ResultsChart").then((m) => m.TrialComparisonChart),
+  { ssr: false }
+);
+const MatchRadar = dynamic(
+  () => import("@/components/ResultsChart").then((m) => m.MatchRadar),
+  { ssr: false }
+);
 
 interface SearchResult {
   query: string;
@@ -74,7 +83,7 @@ export default function SearchPage() {
     <div className="min-h-screen pt-24 sm:pt-28 pb-12 sm:pb-16 overflow-x-hidden">
       {/* Background effects */}
       <div className="fixed top-0 left-0 w-full h-full pointer-events-none">
-        <div className="absolute top-32 right-0 sm:right-10 w-[min(360px,80vw)] h-[min(360px,80vw)] rounded-full bg-[var(--accent)]/[0.06] blur-[120px]" />
+        <div className="absolute top-32 right-0 sm:right-10 w-[min(360px,80vw)] h-[min(360px,80vw)] rounded-full bg-[var(--accent)]/[0.06] blur-[60px] sm:blur-[120px]" />
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
@@ -177,8 +186,8 @@ export default function SearchPage() {
                     ))}
                   </div>
 
-                  {/* Sidebar Charts */}
-                  <div className="space-y-4 lg:sticky lg:top-24 lg:self-start min-w-0">
+                  {/* Sidebar Charts — desktop only; Recharts is expensive on phones */}
+                  <div className="hidden lg:block space-y-4 lg:sticky lg:top-24 lg:self-start min-w-0">
                     <motion.div
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}

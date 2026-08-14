@@ -44,17 +44,15 @@ export default function SearchForm({ onSearch, loading }: SearchFormProps) {
           onBlur={() => setFocused(false)}
           placeholder="Describe the patient profile — age, sex, conditions, medications, lab values, location…"
           rows={4}
-          className="w-full p-4 sm:p-5 pr-14 sm:pr-16 rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-transparent transition-all resize-none text-sm sm:text-base min-h-[120px]"
+          className="w-full p-4 sm:p-5 pr-14 sm:pr-16 rounded-2xl bg-[var(--bg-card)] border border-[var(--border)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:outline-none focus:border-transparent transition-all resize-none text-base min-h-[120px]"
           onKeyDown={(e) => {
             if ((e.metaKey || e.ctrlKey) && e.key === "Enter") handleSubmit(e);
           }}
         />
-        <motion.button
+        <button
           type="submit"
           disabled={loading || !query.trim()}
-          whileHover={{ scale: 1.06 }}
-          whileTap={{ scale: 0.94 }}
-          className="btn-primary absolute bottom-4 right-4 w-10 h-10 rounded-full flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed"
+          className="btn-primary absolute bottom-4 right-4 w-11 h-11 sm:w-10 sm:h-10 rounded-full flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed"
         >
           {loading ? (
             <motion.div
@@ -70,7 +68,7 @@ export default function SearchForm({ onSearch, loading }: SearchFormProps) {
               <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
           )}
-        </motion.button>
+        </button>
       </div>
 
       <div className="mt-5">
@@ -79,17 +77,15 @@ export default function SearchForm({ onSearch, loading }: SearchFormProps) {
         </span>
         <div className="flex flex-wrap gap-2 mt-3">
           {EXAMPLE_QUERIES.map((example, i) => (
-            <motion.button
+            <button
               key={i}
               type="button"
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
               onClick={() => setQuery(example)}
-              className="text-xs px-3 py-1.5 rounded-full border border-[var(--border)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-strong)] transition-all max-w-full text-left truncate"
+              className="text-xs px-3 py-1.5 rounded-full border border-[var(--border)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-strong)] transition-colors max-w-full text-left truncate"
             >
               <span className="sm:hidden">{example.slice(0, 32)}…</span>
               <span className="hidden sm:inline">{example.slice(0, 46)}…</span>
-            </motion.button>
+            </button>
           ))}
         </div>
       </div>

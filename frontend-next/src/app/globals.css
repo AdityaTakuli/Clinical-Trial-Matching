@@ -70,6 +70,13 @@ body {
   position: relative;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button,
+a,
+summary {
+  touch-action: manipulation;
 }
 
 /* Prevent media from overflowing the viewport */
@@ -204,5 +211,25 @@ body::before {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+/* Mobile CSS-globe rotation: pan longitude lines to fake a spinning sphere */
+@keyframes globe-spin {
+  from {
+    background-position-x: 0;
+  }
+  to {
+    background-position-x: -44px;
+  }
+}
+
+.globe-spin {
+  animation: globe-spin 8s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .globe-spin {
+    animation: none;
   }
 }

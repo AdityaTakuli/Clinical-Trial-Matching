@@ -71,7 +71,7 @@ function ScoreRing({ value, label, color }: { value: number; label: string; colo
             stroke="rgba(255,255,255,0.08)"
             strokeWidth="3"
           />
-          <motion.circle
+          <circle
             cx="20"
             cy="20"
             r="18"
@@ -80,9 +80,7 @@ function ScoreRing({ value, label, color }: { value: number; label: string; colo
             strokeWidth="3"
             strokeLinecap="round"
             strokeDasharray={circumference}
-            initial={{ strokeDashoffset: circumference }}
-            animate={{ strokeDashoffset: offset }}
-            transition={{ duration: 1, delay: 0.3 }}
+            strokeDashoffset={offset}
           />
         </svg>
         <span className="absolute inset-0 flex items-center justify-center text-[10px] font-bold text-[var(--text-primary)]">
@@ -103,11 +101,10 @@ export default function TrialCard({
 }) {
   return (
     <motion.article
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, delay: index * 0.1 }}
-      whileHover={{ y: -3 }}
-      className="card p-4 sm:p-6 rounded-2xl group min-w-0"
+      transition={{ duration: 0.25, delay: Math.min(index, 3) * 0.05 }}
+      className="card p-4 sm:p-6 rounded-2xl group min-w-0 lg:hover:-translate-y-0.5"
     >
       <div className="flex items-start justify-between gap-3 sm:gap-4 mb-4">
         <div className="flex-1 min-w-0">
