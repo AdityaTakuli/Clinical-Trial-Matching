@@ -197,6 +197,12 @@ final_score =
   + recency
 ```
 
+An optional **cross-encoder reranker** (`cross-encoder/ms-marco-MiniLM-L6-v2`)
+can refine the top candidates. It is **disabled by default** (`ENABLE_RERANKER=false`)
+because loading a second model exceeds the memory of small free-tier hosts. When
+disabled or unavailable, the pipeline gracefully falls back to the weighted score
+above.
+
 ---
 
 ## Data Storage
@@ -338,6 +344,7 @@ trialmatch/
 │   │   ├── components/         # Navbar, SearchForm, TrialCard, AuthForm, charts
 │   │   └── lib/
 │   │       ├── auth.ts         # JWT storage, login/register, authFetch()
+│   │       ├── api.ts          # Safe JSON parsing (empty/non-JSON responses)
 │   │       └── utils.ts
 │   └── next.config.ts          # /api/* → FastAPI proxy
 │
@@ -399,7 +406,7 @@ trialmatch/
 
 | Layer | Technology |
 |-------|-----------|
-| Frontend | Next.js 16, React 19, TypeScript, Tailwind CSS 4, Framer Motion, Recharts |
+| Frontend | Next.js 16, React 19, TypeScript, Tailwind CSS 4, Framer Motion, Recharts, three.js (WebGL globe, desktop only) |
 | Backend | FastAPI, Uvicorn, Pydantic v2 |
 | AI Pipeline | LangGraph, sentence-transformers, Groq LLM |
 | Auth | Argon2 (pwdlib), JWT (python-jose), OAuth2 Bearer |
@@ -480,6 +487,14 @@ ACCESS_TOKEN_EXPIRE_MINUTES=30
 # Cache
 REDIS_URL=redis://localhost:6379/0
 SEARCH_CACHE_TTL=3600
+
+# CORS (comma-separated allowed origins)
+CORS_ORIGINS=http://localhost:3000
+
+# ML models (optional — sensible defaults; set automatically in Docker)
+ENABLE_RERANKER=false            # neural cross-encoder rerank (memory-heavy)
+EMBEDDING_MODEL_PATH=            # local path to baked MiniLM (Docker sets this)
+HF_HUB_OFFLINE=                  # set to 1 to forbid Hugging Face downloads
 ```
 
 Never commit `.env` to git. Generate a secret key:
@@ -487,6 +502,14 @@ Never commit `.env` to git. Generate a secret key:
 ```bash
 python -c "import secrets; print(secrets.token_urlsafe(32))"
 ```
+
+### Model & memory notes
+
+- The embedding model (`all-MiniLM-L6-v2`) loads **once per process** and is
+  reused across requests — it is never reloaded on the request path.
+- In Docker the model is **baked into the image** and served offline (see below),
+  so `/search-trials` never contacts Hugging Face.
+- Keep `ENABLE_RERANKER=false` on hosts with ≤512 MB RAM to avoid OOM.
 
 ---
 
@@ -500,7 +523,35 @@ docker compose up --build
 
 This starts FastAPI on port 8000. PostgreSQL and Redis must be available separately (or extend `docker-compose.yml` to include them).
 
+The image is optimized for small/free-tier hosts:
+
+- Installs **CPU-only PyTorch** (avoids pulling large CUDA wheels).
+- **Bakes the MiniLM embedding model** into the image at build time and sets
+  `HF_HUB_OFFLINE=1` / `TRANSFORMERS_OFFLINE=1`, so requests never download from
+  Hugging Face (this was the cause of mid-request OOM/timeouts on 512 MB hosts).
+- Binds to `$PORT` (Render/Cloud Run compatible), defaulting to 8000 locally.
+- Defaults `ENABLE_RERANKER=false` to keep memory within free-tier limits.
+
 The frontend is developed and deployed independently via Next.js (`npm run build` / Vercel).
+
+---
+
+## Deployment
+
+TrialMatch is designed to run as two independently deployed services.
+
+| Service | Platform | Notes |
+|---------|----------|-------|
+| **Frontend** (`frontend-next/`) | Vercel | Root directory `frontend-next`. Set `BACKEND_URL` to the backend URL; `next.config.ts` rewrites `/api/*` → `BACKEND_URL`. |
+| **Backend** (`Dockerfile`) | Render (Docker) | Listens on `$PORT`. Set the env vars below. First request after a cold start loads the model from disk once, then reuses it. |
+| **PostgreSQL** | Supabase | Use the **session pooler** connection string; URL-encode special characters in the password (e.g. `@` → `%40`). |
+| **Redis** | Upstash | Use the `rediss://` connection URL (not the REST/HTTPS URL). |
+
+**Backend (Render) env vars:** `DATABASE_URL`, `REDIS_URL`, `SECRET_KEY`,
+`GROQ_API_KEY`, `CORS_ORIGINS` (include your Vercel domain), optional
+`SEARCH_CACHE_TTL`.
+
+**Frontend (Vercel) env vars:** `BACKEND_URL` (your Render URL).
 
 ---
 
@@ -511,4 +562,5 @@ The frontend is developed and deployed independently via Next.js (`npm run build
 - Rate limiting: 30 searches/minute per authenticated user
 - All user-data endpoints scoped to `current_user.id`
 - Redis and PostgreSQL bound to `127.0.0.1` in local dev
-- CORS currently allows all origins (tighten for production)
+- CORS origins are configurable via `CORS_ORIGINS` (comma-separated); set it to your
+  frontend domain(s) in production rather than a wildcard
