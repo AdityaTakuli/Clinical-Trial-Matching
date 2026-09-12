@@ -1,3 +1,20 @@
+export const BACKEND_WAKING_MESSAGE =
+  "The server is starting up (this can take ~30–60 seconds on the free plan). Wait a moment and try again.";
+
+export function isBackendWakingError(error: unknown): boolean {
+  return error instanceof Error && error.message === BACKEND_WAKING_MESSAGE;
+}
+
+function looksLikeWakePage(text: string): boolean {
+  const sample = text.slice(0, 2000).toLowerCase();
+  return (
+    sample.includes("service waking up") ||
+    sample.includes("application loading") ||
+    sample.includes("welcome to render") ||
+    sample.includes("incoming http request detected")
+  );
+}
+
 /** Safe JSON body parsing for API responses that may be empty or HTML. */
 export async function parseJsonResponse<T = unknown>(
   response: Response
@@ -7,9 +24,13 @@ export async function parseJsonResponse<T = unknown>(
   if (!text.trim()) {
     throw new Error(
       response.ok
-        ? "Empty response from server. The backend may have timed out or restarted while loading models — try again in a minute."
+        ? "Empty response from server. The backend may have timed out or restarted — try again in a minute."
         : `Request failed (HTTP ${response.status}) with an empty body.`
     );
+  }
+
+  if (looksLikeWakePage(text)) {
+    throw new Error(BACKEND_WAKING_MESSAGE);
   }
 
   try {

@@ -15,7 +15,7 @@ if not SECRET_KEY:
     raise RuntimeError("SECRET_KEY is not available")
 
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "10080"))
 
 
 def hash_password(password: str) -> str:

@@ -25,10 +25,16 @@ class LoginRequest(BaseModel):
     password: str
 
 
+def _normalize_email(email: str) -> str:
+    return email.strip().lower()
+
+
 @router.post("/register")
 def register(request: RegisterRequest, db: Session = Depends(get_db)):
+    email = _normalize_email(request.email)
+
     # Check whether user already exists
-    existing_user = db.query(User).filter(User.email == request.email).first()
+    existing_user = db.query(User).filter(User.email == email).first()
 
     if existing_user:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Email already registered")
@@ -40,7 +46,7 @@ def register(request: RegisterRequest, db: Session = Depends(get_db)):
 
     # Create user
     user = User(
-        email=request.email,
+        email=email,
         password_hash=hashed_password,
     )
 
@@ -59,8 +65,9 @@ def register(request: RegisterRequest, db: Session = Depends(get_db)):
 
 @router.post("/login")
 def login(request: LoginRequest, db: Session = Depends(get_db)):
-    
-    user = db.query(User).filter(User.email == request.email).first()
+    email = _normalize_email(request.email)
+
+    user = db.query(User).filter(User.email == email).first()
 
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid email or password")

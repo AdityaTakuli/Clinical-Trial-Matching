@@ -1,4 +1,8 @@
-import { parseJsonResponse } from "@/lib/api";
+import {
+  BACKEND_WAKING_MESSAGE,
+  isBackendWakingError,
+  parseJsonResponse,
+} from "@/lib/api";
 
 const TOKEN_KEY = "trialmatch_token";
 const EMAIL_KEY = "trialmatch_email";
@@ -35,6 +39,14 @@ export function clearAuth() {
   notifyAuthChange();
 }
 
+function normalizeEmail(email: string): string {
+  return email.trim().toLowerCase();
+}
+
+function sleep(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 async function parseError(response: Response, fallback: string): Promise<string> {
   try {
     const data = await parseJsonResponse<{ detail?: string | { msg?: string }[] }>(
@@ -44,40 +56,69 @@ async function parseError(response: Response, fallback: string): Promise<string>
     if (Array.isArray(data?.detail) && data.detail[0]?.msg) {
       return data.detail[0].msg ?? fallback;
     }
-  } catch {
-    // ignore JSON parse errors
+  } catch (err) {
+    if (isBackendWakingError(err)) return BACKEND_WAKING_MESSAGE;
   }
   return fallback;
 }
 
-export async function login(email: string, password: string): Promise<void> {
-  const response = await fetch("/api/auth/login", {
+async function postAuth(path: string, email: string, password: string): Promise<Response> {
+  return fetch(path, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
   });
+}
 
-  if (!response.ok) {
-    throw new Error(await parseError(response, "Login failed"));
+/** Retry while Render is cold-starting so the first login attempt isn't a hard fail. */
+async function withWakeRetry(run: () => Promise<void>): Promise<void> {
+  const delays = [0, 4000, 8000];
+  let lastError: unknown;
+
+  for (let i = 0; i < delays.length; i++) {
+    if (delays[i]) await sleep(delays[i]);
+    try {
+      await run();
+      return;
+    } catch (err) {
+      lastError = err;
+      if (!isBackendWakingError(err) || i === delays.length - 1) {
+        throw err;
+      }
+    }
   }
 
-  const data = await parseJsonResponse<{ access_token?: string }>(response);
-  if (!data?.access_token) {
-    throw new Error("Login succeeded but no access token was returned.");
-  }
-  setAuth(data.access_token, email);
+  throw lastError instanceof Error ? lastError : new Error(BACKEND_WAKING_MESSAGE);
+}
+
+export async function login(email: string, password: string): Promise<void> {
+  const normalized = normalizeEmail(email);
+
+  await withWakeRetry(async () => {
+    const response = await postAuth("/api/auth/login", normalized, password);
+
+    if (!response.ok) {
+      throw new Error(await parseError(response, "Invalid email or password"));
+    }
+
+    const data = await parseJsonResponse<{ access_token?: string }>(response);
+    if (!data?.access_token) {
+      throw new Error("Login succeeded but no access token was returned.");
+    }
+    setAuth(data.access_token, normalized);
+  });
 }
 
 export async function register(email: string, password: string): Promise<void> {
-  const response = await fetch("/api/auth/register", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password }),
-  });
+  const normalized = normalizeEmail(email);
 
-  if (!response.ok) {
-    throw new Error(await parseError(response, "Registration failed"));
-  }
+  await withWakeRetry(async () => {
+    const response = await postAuth("/api/auth/register", normalized, password);
+
+    if (!response.ok) {
+      throw new Error(await parseError(response, "Registration failed"));
+    }
+  });
 }
 
 export async function authFetch(input: string, init: RequestInit = {}): Promise<Response> {
