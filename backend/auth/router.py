@@ -3,7 +3,7 @@ from pydantic import BaseModel, EmailStr
 from sqlalchemy.orm import Session
 
 from database.database import get_db
-from database.models import User
+from database.models import User, UserProfile
 from auth.security import (
     hash_password,
     verify_password,
@@ -77,8 +77,19 @@ def login(request: LoginRequest, db: Session = Depends(get_db)):
 
 
 @router.get("/me")
-def get_me(current_user: User = Depends(get_current_user)):
+def get_me(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    profile = (
+        db.query(UserProfile)
+        .filter(UserProfile.user_id == current_user.id)
+        .first()
+    )
+
     return {
         "id": current_user.id,
         "email": current_user.email,
+        "has_profile": profile is not None,
+        "full_name": profile.full_name if profile else None,
     }

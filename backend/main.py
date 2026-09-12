@@ -13,6 +13,9 @@ from auth.dependencies import get_current_user
 from database.database import get_db
 from database.models import User, SearchHistory
 from users.router import router as users_router
+from profiles.router import router as profiles_router
+from registrations.router import router as registrations_router
+from chat.router import router as chat_router
 from cache.service import get_cached_search, set_cached_search
 from cache.rate_limit import check_rate_limit
 from graph import app_graph
@@ -44,6 +47,9 @@ app.add_middleware(
 
 app.include_router(auth_router)
 app.include_router(users_router)
+app.include_router(profiles_router)
+app.include_router(registrations_router)
+app.include_router(chat_router)
 
 
 class SearchRequest(BaseModel):

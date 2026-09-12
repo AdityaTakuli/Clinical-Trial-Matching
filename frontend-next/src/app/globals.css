@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* next-themes toggles a `.dark` class, so `dark:` must follow it (not the OS setting) */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   /* Blue accent (shared across themes, matches globe) */
   --accent: #2f74ff;
@@ -34,6 +37,8 @@
 
   --accent-light: #5b95ff;
   --grid-line: rgba(255, 255, 255, 0.035);
+  --surface-subtle: rgba(255, 255, 255, 0.03);
+  --surface-hover: rgba(255, 255, 255, 0.06);
 }
 
 /* ---- Light theme ---- */
@@ -53,6 +58,8 @@
 
   --accent-light: #1e5fe0;
   --grid-line: rgba(0, 0, 0, 0.045);
+  --surface-subtle: rgba(0, 0, 0, 0.025);
+  --surface-hover: rgba(0, 0, 0, 0.05);
 }
 
 * {
@@ -232,4 +239,152 @@ body::before {
   .globe-spin {
     animation: none;
   }
+}
+
+.btn-ghost:hover {
+  background: var(--surface-hover);
+}
+
+/* Form field shared by profile, chat and dialogs */
+.field {
+  width: 100%;
+  border-radius: 0.75rem;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border);
+  padding: 0.65rem 0.9rem;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.field::placeholder {
+  color: var(--text-muted);
+}
+
+.field:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+/* Card with a soft blue gradient hairline on top */
+.card-glow {
+  position: relative;
+}
+
+.card-glow::before {
+  content: "";
+  position: absolute;
+  inset: 0 12% auto;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent-light), transparent);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Assistant message formatting */
+.chat-prose {
+  font-size: 0.925rem;
+  line-height: 1.65;
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+
+.chat-prose p + p,
+.chat-prose p + ul,
+.chat-prose ul + p,
+.chat-prose p + ol,
+.chat-prose ol + p {
+  margin-top: 0.6rem;
+}
+
+.chat-prose ul,
+.chat-prose ol {
+  padding-left: 1.2rem;
+}
+
+.chat-prose ul {
+  list-style: disc;
+}
+
+.chat-prose ol {
+  list-style: decimal;
+}
+
+.chat-prose li + li {
+  margin-top: 0.25rem;
+}
+
+.chat-prose li::marker {
+  color: var(--accent-light);
+}
+
+.chat-prose strong {
+  font-weight: 600;
+}
+
+.chat-prose h4 {
+  font-weight: 600;
+  margin-top: 0.8rem;
+  margin-bottom: 0.3rem;
+}
+
+.chat-prose code {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.82em;
+  padding: 0.1rem 0.35rem;
+  border-radius: 0.35rem;
+  background: var(--surface-hover);
+}
+
+.chat-prose a {
+  color: var(--accent-light);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+@keyframes caret-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.typing-caret {
+  display: inline-block;
+  width: 0.45rem;
+  height: 1rem;
+  margin-left: 2px;
+  vertical-align: -2px;
+  border-radius: 1px;
+  background: var(--accent-light);
+  animation: caret-blink 1s steps(1) infinite;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+/* Home journey steps (activated by ScrollTrigger) */
+.journey-node {
+  transition: background 0.4s ease, color 0.4s ease, border-color 0.4s ease,
+    box-shadow 0.4s ease;
+}
+
+.journey-step.is-active .journey-node {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #ffffff;
+  box-shadow: 0 0 0 6px var(--accent-soft), 0 8px 24px -6px var(--accent-glow);
+}
+
+.journey-title {
+  transition: color 0.4s ease;
+}
+
+.journey-step.is-active .journey-title {
+  color: var(--text-primary);
 }

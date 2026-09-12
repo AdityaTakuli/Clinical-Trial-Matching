@@ -9,6 +9,8 @@ import { useGSAP } from "@gsap/react";
 import StatsCounter from "@/components/StatsCounter";
 import FeatureCard from "@/components/FeatureCard";
 import GlobeSection from "@/components/GlobeSection";
+import JourneySection from "@/components/home/JourneySection";
+import Magnetic from "@/components/anim/Magnetic";
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -155,7 +157,7 @@ export default function Home() {
             </p>
 
             <div className="hero-fade flex flex-wrap items-center gap-3">
-              <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
+              <Magnetic>
                 <Link
                   href="/search"
                   className="btn-primary inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full font-medium text-sm sm:text-base"
@@ -163,15 +165,18 @@ export default function Home() {
                   Start Matching
                   <span aria-hidden>→</span>
                 </Link>
-              </motion.div>
-              <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
-                <a
-                  href="#features"
-                  className="btn-ghost inline-flex px-5 sm:px-6 py-2.5 sm:py-3 rounded-full text-sm sm:text-base"
+              </Magnetic>
+              <Magnetic>
+                <Link
+                  href="/chat"
+                  className="btn-ghost inline-flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-full text-sm sm:text-base"
                 >
-                  Learn More
-                </a>
-              </motion.div>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                  </svg>
+                  Ask the Assistant
+                </Link>
+              </Magnetic>
             </div>
           </div>
 
@@ -231,6 +236,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <JourneySection />
 
       {/* CTA Section */}
       <section className="py-16 sm:py-28 relative">

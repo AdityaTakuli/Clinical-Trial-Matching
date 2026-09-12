@@ -1,11 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { ReactNode, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface SearchFormProps {
   onSearch: (query: string) => void;
   loading: boolean;
+  query: string;
+  onQueryChange: (query: string) => void;
+  /** Extra controls shown above the example queries (e.g. "Use my profile"). */
+  toolbar?: ReactNode;
 }
 
 const EXAMPLE_QUERIES = [
@@ -15,8 +19,13 @@ const EXAMPLE_QUERIES = [
   "55 year old woman with hypertension and heart failure in Delhi",
 ];
 
-export default function SearchForm({ onSearch, loading }: SearchFormProps) {
-  const [query, setQuery] = useState("");
+export default function SearchForm({
+  onSearch,
+  loading,
+  query,
+  onQueryChange,
+  toolbar,
+}: SearchFormProps) {
   const [focused, setFocused] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -39,7 +48,7 @@ export default function SearchForm({ onSearch, loading }: SearchFormProps) {
       >
         <textarea
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => onQueryChange(e.target.value)}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
           placeholder="Describe the patient profile — age, sex, conditions, medications, lab values, location…"
@@ -51,6 +60,7 @@ export default function SearchForm({ onSearch, loading }: SearchFormProps) {
         />
         <button
           type="submit"
+          aria-label="Search trials"
           disabled={loading || !query.trim()}
           className="btn-primary absolute bottom-4 right-4 w-11 h-11 sm:w-10 sm:h-10 rounded-full flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed"
         >
@@ -71,6 +81,8 @@ export default function SearchForm({ onSearch, loading }: SearchFormProps) {
         </button>
       </div>
 
+      {toolbar && <div className="mt-4">{toolbar}</div>}
+
       <div className="mt-5">
         <span className="text-xs text-[var(--text-muted)] uppercase tracking-[0.15em]">
           Try an example
@@ -80,7 +92,7 @@ export default function SearchForm({ onSearch, loading }: SearchFormProps) {
             <button
               key={i}
               type="button"
-              onClick={() => setQuery(example)}
+              onClick={() => onQueryChange(example)}
               className="text-xs px-3 py-1.5 rounded-full border border-[var(--border)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:border-[var(--border-strong)] transition-colors max-w-full text-left truncate"
             >
               <span className="sm:hidden">{example.slice(0, 32)}…</span>
@@ -98,17 +110,13 @@ export default function SearchForm({ onSearch, loading }: SearchFormProps) {
             exit={{ opacity: 0, height: 0 }}
             className="mt-6 overflow-hidden"
           >
-            <div className="flex items-center gap-3 p-4 rounded-xl bg-white/[0.03] border border-[var(--border)]">
+            <div className="flex items-center gap-3 p-4 rounded-xl bg-[var(--surface-subtle)] border border-[var(--border)]">
               <div className="flex gap-1">
                 {[0, 1, 2].map((i) => (
                   <motion.div
                     key={i}
                     animate={{ scale: [1, 1.4, 1], opacity: [0.4, 1, 0.4] }}
-                    transition={{
-                      repeat: Infinity,
-                      duration: 0.9,
-                      delay: i * 0.15,
-                    }}
+                    transition={{ repeat: Infinity, duration: 0.9, delay: i * 0.15 }}
                     className="w-1.5 h-1.5 rounded-full bg-[var(--accent-light)]"
                   />
                 ))}
