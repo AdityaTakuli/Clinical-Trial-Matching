@@ -1,4 +1,4 @@
-import { authFetch, clearAuth } from "@/lib/auth";
+import { authFetch, clearAuth, isDevAuthBypass } from "@/lib/auth";
 import { parseJsonResponse } from "@/lib/api";
 
 /* ---------- Types ---------- */
@@ -134,6 +134,9 @@ async function send(path: string, { json, ...init }: RequestOptions = {}) {
   });
 
   if (response.status === 401) {
+    if (isDevAuthBypass()) {
+      throw new ApiError(401, "API needs a real backend login. UI preview is still available.");
+    }
     clearAuth();
     throw new ApiError(401, "Your session has expired. Please log in again.");
   }

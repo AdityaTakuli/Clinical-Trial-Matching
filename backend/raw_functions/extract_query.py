@@ -4,6 +4,8 @@ import json
 from dotenv import load_dotenv
 from groq import Groq
 
+from llm_config import complete
+
 
 load_dotenv()
 
@@ -33,8 +35,8 @@ Do not add information that is not present.
 """
 
 
-    response = client.chat.completions.create(
-        model="llama-3.1-8b-instant",
+    response = complete(
+        client,
         messages=[
             {
                 "role": "system",

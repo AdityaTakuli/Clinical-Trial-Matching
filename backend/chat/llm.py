@@ -4,10 +4,16 @@ import os
 from dotenv import load_dotenv
 from groq import Groq
 
+from llm_config import complete, model_chain
+
 
 load_dotenv()
 
-CHAT_MODEL = os.getenv("GROQ_CHAT_MODEL", "openai/gpt-oss-120b")
+CHAT_MODELS = model_chain(
+    os.getenv("GROQ_CHAT_MODEL"),
+    os.getenv("GROQ_CHAT_FALLBACK_MODELS"),
+)
+CHAT_MODEL = CHAT_MODELS[0]
 
 MAX_CONTEXT_TRIALS = 10
 MAX_CONTEXT_CHARS = 40_000
@@ -117,18 +123,20 @@ def build_system_prompt(profile: dict | None, context: dict | None) -> str:
 
 
 def stream_reply(messages: list[dict]):
-    options = {}
-    if CHAT_MODEL.startswith("openai/gpt-oss"):
-        # Reasoning tokens are not streamed as content; keep them short for latency.
-        options["reasoning_effort"] = "low"
+    def options_for(model: str) -> dict:
+        if model.startswith("openai/gpt-oss"):
+            # Reasoning tokens are not streamed as content; keep them short for latency.
+            return {"reasoning_effort": "low"}
+        return {}
 
-    stream = _get_client().chat.completions.create(
-        model=CHAT_MODEL,
+    stream = complete(
+        _get_client(),
+        models=CHAT_MODELS,
+        options_for=options_for,
         messages=messages,
         temperature=0.4,
         max_tokens=2048,
         stream=True,
-        **options,
     )
 
     for chunk in stream:

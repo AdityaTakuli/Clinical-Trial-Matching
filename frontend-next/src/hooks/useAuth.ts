@@ -2,7 +2,7 @@
 
 import { useEffect, useSyncExternalStore } from "react";
 import { useRouter } from "next/navigation";
-import { AUTH_EVENT, getEmail, getToken } from "@/lib/auth";
+import { AUTH_EVENT, getEmail, getToken, isDevAuthBypass } from "@/lib/auth";
 
 function subscribe(onChange: () => void) {
   window.addEventListener(AUTH_EVENT, onChange);
@@ -28,7 +28,7 @@ export function useRequireAuth(nextPath: string): boolean {
   const router = useRouter();
 
   useEffect(() => {
-    if (token === null) {
+    if (token === null && !isDevAuthBypass()) {
       router.replace(`/login?next=${encodeURIComponent(nextPath)}`);
     }
   }, [token, router, nextPath]);

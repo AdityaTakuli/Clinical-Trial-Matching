@@ -6,16 +6,37 @@ import {
 
 const TOKEN_KEY = "trialmatch_token";
 const EMAIL_KEY = "trialmatch_email";
+const DEV_BYPASS_KEY = "trialmatch_dev_bypass";
+const DEV_PREVIEW_TOKEN = "dev-preview";
+const DEV_PREVIEW_EMAIL = "preview@localhost";
 
 export const AUTH_EVENT = "trialmatch-auth-changed";
 
+/** Local `npm run dev` only — never on Vercel/production. */
+export function isDevAuthBypass(): boolean {
+  if (process.env.NODE_ENV === "production") return false;
+  if (process.env.NEXT_PUBLIC_DEV_BYPASS_AUTH === "false") return false;
+  if (process.env.NEXT_PUBLIC_DEV_BYPASS_AUTH === "true") return true;
+  if (typeof window !== "undefined" && localStorage.getItem(DEV_BYPASS_KEY) === "1") {
+    return true;
+  }
+  // Default: skip login while developing so you can look at the UI
+  return process.env.NODE_ENV === "development";
+}
+
 export function getToken(): string | null {
   if (typeof window === "undefined") return null;
+  if (isDevAuthBypass()) {
+    return localStorage.getItem(TOKEN_KEY) || DEV_PREVIEW_TOKEN;
+  }
   return localStorage.getItem(TOKEN_KEY);
 }
 
 export function getEmail(): string | null {
   if (typeof window === "undefined") return null;
+  if (isDevAuthBypass()) {
+    return localStorage.getItem(EMAIL_KEY) || DEV_PREVIEW_EMAIL;
+  }
   return localStorage.getItem(EMAIL_KEY);
 }
 
@@ -58,6 +79,9 @@ async function parseError(response: Response, fallback: string): Promise<string>
     }
   } catch (err) {
     if (isBackendWakingError(err)) return BACKEND_WAKING_MESSAGE;
+    if (response.status >= 500) {
+      return "The server hit a database error. Wait a minute and try again — if it persists, DATABASE_URL on Render is wrong or tables were never created.";
+    }
   }
   return fallback;
 }

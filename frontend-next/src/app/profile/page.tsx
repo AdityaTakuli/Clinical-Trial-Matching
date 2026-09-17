@@ -7,6 +7,7 @@ import ProfileForm from "@/components/profile/ProfileForm";
 import RegisterTrialDialog from "@/components/RegisterTrialDialog";
 import Magnetic from "@/components/anim/Magnetic";
 import { useAuthEmail, useRequireAuth } from "@/hooks/useAuth";
+import { isDevAuthBypass } from "@/lib/auth";
 import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
 import {
   ApiError,
@@ -141,7 +142,7 @@ function ProfileApp() {
   const indicatorRef = useRef<HTMLSpanElement>(null);
 
   const handleError = (err: unknown, fallback: string) => {
-    if (err instanceof ApiError && err.status === 401) {
+    if (err instanceof ApiError && err.status === 401 && !isDevAuthBypass()) {
       router.replace("/login?next=/profile");
       return;
     }
@@ -158,7 +159,7 @@ function ProfileApp() {
         const unauthorized = [p, r, s, h].some(
           (x) => x.status === "rejected" && x.reason instanceof ApiError && x.reason.status === 401
         );
-        if (unauthorized) {
+        if (unauthorized && !isDevAuthBypass()) {
           router.replace("/login?next=/profile");
           return;
         }

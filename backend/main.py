@@ -4,8 +4,9 @@ import time
 
 from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
-
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
 
 from auth.router import router as auth_router
@@ -20,6 +21,8 @@ from cache.service import get_cached_search, set_cached_search
 from cache.rate_limit import check_rate_limit
 from graph import app_graph
 from logging_config import new_request_id, setup_logging
+from database.database import Base, engine
+from database import models as _models  # noqa: F401 — register tables for create_all
 
 
 setup_logging()
@@ -44,6 +47,29 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.on_event("startup")
+def _ensure_tables():
+    try:
+        Base.metadata.create_all(bind=engine)
+        logger.info("Database tables ready")
+    except Exception:
+        logger.exception("Could not create/verify database tables")
+
+
+@app.exception_handler(SQLAlchemyError)
+async def _database_error_handler(request: Request, exc: SQLAlchemyError):
+    logger.exception("Database error on %s %s", request.method, request.url.path)
+    return JSONResponse(
+        status_code=503,
+        content={
+            "detail": (
+                "Database is unavailable. On Render, check DATABASE_URL "
+                "(Supabase session pooler, password URL-encoded) and redeploy."
+            )
+        },
+    )
+
 
 app.include_router(auth_router)
 app.include_router(users_router)

@@ -31,7 +31,7 @@ def _normalize_email(email: str) -> str:
 
 @router.post("/register")
 def register(request: RegisterRequest, db: Session = Depends(get_db)):
-    email = _normalize_email(request.email)
+    email = _normalize_email(str(request.email))
 
     # Check whether user already exists
     existing_user = db.query(User).filter(User.email == email).first()
@@ -65,7 +65,7 @@ def register(request: RegisterRequest, db: Session = Depends(get_db)):
 
 @router.post("/login")
 def login(request: LoginRequest, db: Session = Depends(get_db)):
-    email = _normalize_email(request.email)
+    email = _normalize_email(str(request.email))
 
     user = db.query(User).filter(User.email == email).first()
 

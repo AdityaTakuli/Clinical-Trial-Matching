@@ -5,6 +5,7 @@ import re
 from dotenv import load_dotenv
 from groq import Groq
 
+from llm_config import complete
 from raw_functions.patient_profile_regex import extract_patient_profile_regex
 
 
@@ -71,8 +72,8 @@ Rules:
 """
 
     try:
-        response = client.chat.completions.create(
-            model="llama-3.1-8b-instant",
+        response = complete(
+            client,
             messages=[
                 {
                     "role": "system",

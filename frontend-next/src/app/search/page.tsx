@@ -11,6 +11,7 @@ import PatientProfile from "@/components/PatientProfile";
 import RegisterTrialDialog from "@/components/RegisterTrialDialog";
 import Reveal from "@/components/anim/Reveal";
 import { useAuthToken } from "@/hooks/useAuth";
+import { isDevAuthBypass } from "@/lib/auth";
 import {
   ApiError,
   Profile,
@@ -77,7 +78,7 @@ function SearchContent() {
   const autoRan = useRef(false);
 
   const redirectIfUnauthorized = (err: unknown) => {
-    if (err instanceof ApiError && err.status === 401) {
+    if (err instanceof ApiError && err.status === 401 && !isDevAuthBypass()) {
       router.push("/login?next=/search");
       return true;
     }
@@ -108,7 +109,7 @@ function SearchContent() {
   }, [token, params]);
 
   const handleSearch = async (text: string) => {
-    if (!token) {
+    if (!token && !isDevAuthBypass()) {
       router.push("/login?next=/search");
       return;
     }

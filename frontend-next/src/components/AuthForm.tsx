@@ -56,9 +56,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
       if (prefersReducedMotion()) return;
       const tl = gsap.timeline({ defaults: { ease: "power3.out" } });
       tl.from(".auth-heading-line", { yPercent: 110, duration: 0.9, stagger: 0.1 })
-        .from(".auth-perk", { x: -24, opacity: 0, stagger: 0.09, duration: 0.6 }, 0.25)
-        .from(".auth-card", { y: 30, opacity: 0, duration: 0.8 }, 0.1)
-        .from(".auth-field", { y: 14, opacity: 0, stagger: 0.07, duration: 0.5 }, 0.35);
+        .from(".auth-perk", { x: -24, opacity: 0, stagger: 0.09, duration: 0.6 }, 0.25);
       gsap.to(".auth-orb", { scale: 1.15, opacity: 0.9, duration: 4, ease: "sine.inOut", repeat: -1, yoyo: true });
     },
     { scope: container }

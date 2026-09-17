@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import Markdown from "@/components/chat/Markdown";
 import { useRequireAuth } from "@/hooks/useAuth";
+import { isDevAuthBypass } from "@/lib/auth";
 import { gsap, prefersReducedMotion, useGSAP } from "@/lib/gsap";
 import {
   ApiError,
@@ -85,7 +86,7 @@ function ChatApp() {
   const fail = useCallback(
     (err: unknown, fallback: string) => {
       if (err instanceof DOMException && err.name === "AbortError") return;
-      if (err instanceof ApiError && err.status === 401) {
+      if (err instanceof ApiError && err.status === 401 && !isDevAuthBypass()) {
         router.replace("/login?next=/chat");
         return;
       }
