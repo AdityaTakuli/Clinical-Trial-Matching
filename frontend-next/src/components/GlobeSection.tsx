@@ -10,6 +10,12 @@ const World = dynamic(
   { ssr: false }
 );
 
+// Transparent room around the globe so the arcs are not cut off at the edge of
+// the canvas. It only bleeds into the hero's gutters; the globe itself keeps its
+// size because the camera moves back by the same factor.
+const CANVAS_BLEED = 0.1;
+const bleed = `-${CANVAS_BLEED * 100}%`;
+
 const baseConfig = {
   pointSize: 4,
   showAtmosphere: true,
@@ -87,11 +93,15 @@ export default function GlobeSection() {
         <div className="w-[min(420px,90%)] aspect-square rounded-full bg-[var(--accent)]/[0.12] blur-[90px]" />
       </div>
 
-      <div className="w-full h-full">
+      <div
+        className="absolute"
+        style={{ top: bleed, bottom: bleed, left: bleed, right: bleed }}
+      >
         <World
           key={isLight ? "light" : "dark"}
           globeConfig={globeConfig}
           data={trialArcs}
+          canvasBleed={CANVAS_BLEED}
         />
       </div>
 

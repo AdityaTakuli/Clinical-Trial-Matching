@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Color, Scene, Fog, PerspectiveCamera, Vector3 } from "three";
 import ThreeGlobe from "three-globe";
 import { useThree, Canvas, extend } from "@react-three/fiber";
@@ -11,6 +11,10 @@ extend({ ThreeGlobe: ThreeGlobe });
 const RING_PROPAGATION_SPEED = 3;
 const aspect = 1.2;
 const cameraZ = 265;
+// three-globe draws the sphere at radius 100; arc altitude is a multiple of it.
+const GLOBE_RADIUS = 100;
+// Keep the tallest arc just inside the edge of the canvas.
+const FIT_MARGIN = 0.94;
 
 type Position = {
   order: number;
@@ -51,11 +55,20 @@ export type GlobeConfig = {
 interface WorldProps {
   globeConfig: GlobeConfig;
   data: Position[];
+  // Fraction of its box the canvas bleeds past the layout on every side. The
+  // camera is pushed back to match, so that transparent margin becomes room for
+  // the arcs to arch into and the globe keeps its on-screen size.
+  canvasBleed?: number;
+}
+
+interface GlobeProps extends WorldProps {
+  // Highest arc the current canvas can show without clipping it.
+  maxArcAltitude?: number;
 }
 
 let numbersOfRings = [0];
 
-export function Globe({ globeConfig, data }: WorldProps) {
+export function Globe({ globeConfig, data, maxArcAltitude }: GlobeProps) {
   const globeRef = useRef<ThreeGlobe | null>(null);
   const groupRef = useRef<any>(null);
   const [isInitialized, setIsInitialized] = useState(false);
@@ -109,6 +122,8 @@ export function Globe({ globeConfig, data }: WorldProps) {
   ]);
 
   // Build data when globe is initialized or when data changes
+  const altitudeCeiling = maxArcAltitude ?? Infinity;
+
   useEffect(() => {
     if (!globeRef.current || !isInitialized || !data) return;
 
@@ -159,7 +174,9 @@ export function Globe({ globeConfig, data }: WorldProps) {
       .arcEndLat((d) => (d as { endLat: number }).endLat * 1)
       .arcEndLng((d) => (d as { endLng: number }).endLng * 1)
       .arcColor((e: any) => (e as { color: string }).color)
-      .arcAltitude((e) => (e as { arcAlt: number }).arcAlt * 1)
+      .arcAltitude((e) =>
+        Math.min((e as { arcAlt: number }).arcAlt, altitudeCeiling),
+      )
       .arcStroke(() => [0.32, 0.28, 0.3][Math.round(Math.random() * 2)])
       .arcDashLength(defaultProps.arcLength)
       .arcDashInitialGap((e) => (e as { order: number }).order * 1)
@@ -184,6 +201,7 @@ export function Globe({ globeConfig, data }: WorldProps) {
   }, [
     isInitialized,
     data,
+    altitudeCeiling,
     defaultProps.pointSize,
     defaultProps.showAtmosphere,
     defaultProps.atmosphereColor,
@@ -241,13 +259,57 @@ export function WebGLRendererConfig() {
   return null;
 }
 
+// The camera stays at a fixed distance so the globe keeps its size. What does
+// change with the container's shape is how much room is left above the sphere,
+// so report the tallest arc that still fits and let the arcs flatten to it
+// instead of being sliced off at the edge of the canvas.
+export function ArcAltitudeFit({
+  distance,
+  onFit,
+}: {
+  distance: number;
+  onFit: (maxAltitude: number) => void;
+}) {
+  const { camera, size } = useThree();
+
+  useEffect(() => {
+    const cam = camera as PerspectiveCamera;
+    const viewAspect = size.width / size.height;
+    if (!viewAspect || !Number.isFinite(viewAspect)) return;
+
+    const vFov = (cam.fov * Math.PI) / 180;
+    const halfHeight = distance * Math.tan(vFov / 2);
+    // Half-width is half-height * aspect, so the narrower axis is the limit.
+    const visibleRadius = halfHeight * Math.min(viewAspect, 1) * FIT_MARGIN;
+
+    onFit(Math.max(0.05, visibleRadius / GLOBE_RADIUS - 1));
+  }, [camera, distance, size.width, size.height, onFit]);
+
+  return null;
+}
+
 export function World(props: WorldProps) {
-  const { globeConfig } = props;
-  const scene = new Scene();
-  scene.fog = new Fog(0xffffff, 400, 2000);
+  const { globeConfig, canvasBleed = 0 } = props;
+  const [maxArcAltitude, setMaxArcAltitude] = useState(0.2);
+
+  const cameraDistance = cameraZ * (1 + 2 * canvasBleed);
+
+  // Memoised so the state above cannot rebuild the scene and restart the globe.
+  const scene = useMemo(() => {
+    const s = new Scene();
+    s.fog = new Fog(0xffffff, 400, 2000);
+    return s;
+  }, []);
+
+  const camera = useMemo(
+    () => new PerspectiveCamera(50, aspect, 100, 1800),
+    [],
+  );
+
   return (
-    <Canvas scene={scene} camera={new PerspectiveCamera(50, aspect, 100, 1800)}>
+    <Canvas scene={scene} camera={camera}>
       <WebGLRendererConfig />
+      <ArcAltitudeFit distance={cameraDistance} onFit={setMaxArcAltitude} />
       <ambientLight color={globeConfig.ambientLight} intensity={0.6} />
       <directionalLight
         color={globeConfig.directionalLeftLight}
@@ -262,12 +324,12 @@ export function World(props: WorldProps) {
         position={new Vector3(-200, 500, 200)}
         intensity={0.8}
       />
-      <Globe {...props} />
+      <Globe {...props} maxArcAltitude={maxArcAltitude} />
       <OrbitControls
         enablePan={false}
         enableZoom={false}
-        minDistance={cameraZ}
-        maxDistance={cameraZ}
+        minDistance={cameraDistance}
+        maxDistance={cameraDistance}
         autoRotateSpeed={1}
         autoRotate={true}
         minPolarAngle={Math.PI / 3.5}
