@@ -118,14 +118,16 @@ export default function Navbar() {
       className="fixed top-0 left-0 right-0 z-50 glass"
     >
       <div className="w-full max-w-[100vw] px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
-        <Link href="/" className="flex items-center gap-2 group shrink-0">
-          <span className="text-lg sm:text-xl font-semibold tracking-tight text-[var(--text-primary)]">
-            Trial<span className="text-[var(--accent-light)]">Match</span>
-          </span>
-        </Link>
+        <div className="flex shrink-0 md:flex-1 md:basis-0">
+          <Link href="/" className="flex items-center gap-2 group">
+            <span className="text-lg sm:text-xl font-semibold tracking-tight text-[var(--text-primary)]">
+              Trial<span className="text-[var(--accent-light)]">Match</span>
+            </span>
+          </Link>
+        </div>
 
         {/* Center links (desktop) */}
-        <div className="hidden md:flex flex-1 items-center justify-center gap-1">
+        <div className="hidden md:flex shrink-0 items-center justify-center gap-1">
           {links.map((link) => {
             const active = isActive(link.href);
             return (
@@ -159,7 +161,7 @@ export default function Navbar() {
         </div>
 
         {/* Right side */}
-        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+        <div className="flex items-center justify-end gap-1.5 sm:gap-2 shrink-0 md:flex-1 md:basis-0">
           <ThemeToggle />
 
           <div className="hidden md:flex items-center gap-2">
