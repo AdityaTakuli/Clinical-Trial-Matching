@@ -300,11 +300,11 @@ function ChatApp() {
           sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
-        <div className="p-3">
+        <div className="shrink-0 h-14 flex items-center px-3 border-b border-[var(--border)]">
           <button
             type="button"
             onClick={() => openSession(null)}
-            className="btn-primary w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium"
+            className="btn-primary w-full h-9 inline-flex items-center justify-center gap-2 px-4 rounded-xl text-sm font-medium"
           >
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
               <path d="M12 5v14M5 12h14" />
@@ -313,7 +313,7 @@ function ChatApp() {
           </button>
         </div>
 
-        <div className="px-4 pt-2 pb-2 text-[11px] uppercase tracking-[0.15em] text-[var(--text-muted)]">
+        <div className="px-4 pt-4 pb-2 text-[11px] uppercase tracking-[0.15em] text-[var(--text-muted)]">
           History
         </div>
 
