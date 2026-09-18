@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "TrialMatch — AI Clinical Trial Discovery",
+  title: "TrialMatch",
   description:
     "Find recruiting clinical trials matched to your patient profile using AI-powered semantic search.",
 };
